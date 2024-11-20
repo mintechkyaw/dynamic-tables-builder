@@ -24,7 +24,7 @@ class FormController extends Controller
     {
         $data = $request->validated();
         try {
-            $form = Form::create($data);
+            $form = auth()->user()->forms()->create($data);
 
             return response()->json(
                 [

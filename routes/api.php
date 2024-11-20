@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->group(function () {});
 
-Route::apiResource('forms', FormController::class);
-Route::apiResource('form_fields', FormFieldController::class);
-
-Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('forms', FormController::class);
+    Route::apiResource('form_fields', FormFieldController::class);
+    Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
+});
