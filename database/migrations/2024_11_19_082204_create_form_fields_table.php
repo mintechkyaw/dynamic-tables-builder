@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('form_id')->constrained()->cascadeOnDelete();
             $table->string('column_name');
-            $table->enum('data_type', ['string','number', 'date']);
-            $table->enum('type',['text','check_box','radio']);
+            $table->enum('data_type', ['string', 'number', 'enum', 'date']);
+            $table->enum('type', ['text', 'check_box', 'radio']);
             $table->json('options');
-            $table->boolean('required')->default(false);
+            $table->boolean(column: 'required')->default(false);
             $table->timestamps();
         });
     }
