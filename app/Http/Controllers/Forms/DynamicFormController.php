@@ -4,48 +4,23 @@ namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
 use App\Models\Form;
+use Artisan;
 use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function publish(Form $form)
     {
-        //
-    }
+        if ($form->status === 'published') {
+            return response()->json(['error' => 'Form is already published'], 400);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $this->generateDynamicMigration($form);
+        Artisan::call('migrate');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $form->update(['status' => 'published']);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['message' => 'Form published successfully']);
     }
 
     public function generateDynamicMigration(Form $form)

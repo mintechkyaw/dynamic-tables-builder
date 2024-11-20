@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Forms\DynamicFormController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormFieldController;
 use Illuminate\Http\Request;
@@ -23,3 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {});
 
 Route::apiResource('forms', FormController::class);
 Route::apiResource('form_fields', FormFieldController::class);
+
+Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
