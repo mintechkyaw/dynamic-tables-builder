@@ -5,6 +5,9 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@fortawesome/fontawesome-free": "^6.7.1",
+        "@mdi/font": "^7.4.47",
+        "@mdi/js": "^7.4.47",
         "@popperjs/core": "^2.11.6",
         "@vitejs/plugin-vue": "^4.5.0",
         "axios": "^1.7.7",
@@ -15,6 +18,7 @@
         "vue": "^3.2.37"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.7.1",
         "vue-router": "^4.4.5",
         "vuetify": "^3.7.4",
         "vuex": "^4.1.0"
