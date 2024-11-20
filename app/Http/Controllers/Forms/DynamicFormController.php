@@ -29,14 +29,18 @@ class DynamicFormController extends Controller
         $migrationName = 'create_' . $form->slug . '_table';
         $tableName = $form->slug;
 
+        if (empty($tableName)) {
+            throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
+        }
+
         $fieldDefinitions = $fields->map(function ($field) {
-            $type = match ($field->type) {
-                'text' => 'string',
+            $type = match ($field->data_type) {
+                'string' => 'string',
                 'number' => 'integer',
                 'date' => 'date',
                 default => 'string',
             };
-            return "\$table->{$type}('{$field->name}')->nullable();";
+            return "\$table->{$type}('{$field->column_name}')->nullable();";
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
