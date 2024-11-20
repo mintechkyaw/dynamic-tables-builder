@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
-use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {
