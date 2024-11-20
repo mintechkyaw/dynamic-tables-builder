@@ -3,7 +3,6 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormFieldController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

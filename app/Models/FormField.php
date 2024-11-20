@@ -11,7 +11,8 @@ class FormField extends Model
 
     protected $fillable = ['form_id', 'column_name', 'data_type', 'type', 'options', 'required'];
 
-    public function form() {
+    public function form()
+    {
         return $this->belongsTo(Form::class);
     }
 }
