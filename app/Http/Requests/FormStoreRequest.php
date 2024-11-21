@@ -21,9 +21,14 @@ class FormStoreRequest extends FormRequest
      */
     public function rules(): array
     {
+        if (request()->isMethod('post')) {
+            return [
+                'name' => 'required|string|max:255',
+                'slug' => 'required|string|max:255|unique:forms,slug'
+            ];
+        }
         return [
-            'name' => 'required|string|max:255',
-            'status' => 'required|string|in:drafted,published',
+            'name' => 'required|string|max:255'
         ];
     }
 }

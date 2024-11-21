@@ -3,6 +3,15 @@
     <v-navigation-drawer v-model="drawer">
         <v-list>
             <v-list-item title="Navigation drawer"></v-list-item>
+            <v-list-group
+                v-model="value"
+                v-for="item in items"
+                :key="key"
+                :prepend-icon="icon"
+                no-action
+            >
+                
+            </v-list-group>
         </v-list>
     </v-navigation-drawer>
 

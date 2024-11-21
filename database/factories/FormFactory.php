@@ -20,7 +20,7 @@ class FormFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'name' => $this->faker->words(3, true),
             'slug' => $this->faker->unique()->slug(),
-            'status' => $this->faker->randomElement(['draft', 'published']),
+            'status' => $this->faker->randomElement(['drafted', 'published']),
         ];
     }
 }

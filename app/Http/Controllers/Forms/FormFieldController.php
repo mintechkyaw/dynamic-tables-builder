@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormFieldRequest;
+use App\Http\Resources\FormFieldResource;
 use App\Models\FormField;
-use Illuminate\Http\Request;
 
 class FormFieldController extends Controller
 {
@@ -15,7 +15,7 @@ class FormFieldController extends Controller
     public function index()
     {
         $form_fields = FormField::all();
-
+        return FormFieldResource::collection($form_fields);
     }
 
     /**
@@ -48,24 +48,56 @@ class FormFieldController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(FormField $formField)
     {
-        //
+        return new FormFieldResource($formField);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(FormFieldRequest $request, FormField $formField)
     {
-        //
+        if ($formField->form->status === 'drafted') {
+            $data = $request->validated();
+            try {
+                $formField->update($data);
+                return response()->json([
+                    'msg' => 'Form Field Updated!'
+                ], 202);
+            } catch (\Throwable $th) {
+                \Log::error("Error in Updating Form: {$th->getMessage()}", [
+                    'exception' => $th,
+                ]);
+            }
+            return response()->json([
+                'error' => true,
+            ], 500);
+        }
+        return response()->json([
+            'error' => "Form had been published!"
+        ], 403);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(FormField $formField)
     {
-        //
+        try {
+            $formField->delete();
+
+            return response()->json([
+                'msg' => 'Form Deleted Successfully!',
+            ]);
+        } catch (\Throwable $th) {
+            \Log::error("Error in Deleting Form Field: {$th->getMessage()}", [
+                'exception' => $th,
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+        ], 500);
     }
 }

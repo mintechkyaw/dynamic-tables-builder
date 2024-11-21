@@ -18,6 +18,7 @@ class FormResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'status' => $this->status,
             'form_fields' => FormFieldResource::collection($this->fields),
         ];
     }

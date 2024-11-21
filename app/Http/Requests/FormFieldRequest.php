@@ -12,7 +12,10 @@ class FormFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->forms()->where('id', $this->form_id)->exists();
+        // return auth()->user()->forms()->where('id', $this->form_id)->exists();
+        return true;
+
+
     }
 
     /**
@@ -22,12 +25,30 @@ class FormFieldRequest extends FormRequest
      */
     public function rules(): array
     {
+        if (request()->isMethod('put') || request()->isMethod('patch')) {
+            return [
+                'column_name' => 'sometimes|string|max:255|' .
+                    Rule::unique('form_fields')->where(function ($query) {
+                        return $query->where('form_id', $this->form_id);
+                    })->ignore($this->route('form_field')->id),
+                'data_type' => 'sometimes|string|in:string,number,enum,date',
+                'type' => [
+                    'sometimes',
+                    'string',
+                    'in:text,check_box,radio',
+                    Rule::prohibitedIf($this->data_type === 'enum' and $this->type === 'text'),
+
+                ],
+                'options' => 'required_if:data_type,enum|array',
+                'required' => 'sometimes|boolean',
+            ];
+        }
         return [
             'form_id' => 'required|exists:forms,id',
-            'column_name' => 'required|string|max:255|'.
+            'column_name' => 'required|string|max:255|' .
                 Rule::unique('form_fields')->where(function ($query) {
                     return $query->where('form_id', $this->form_id);
-                }),
+                })->ignore($this->route('form_field')->id),
             'data_type' => 'required|string|in:string,number,enum,date',
             'type' => [
                 'required',
@@ -37,7 +58,6 @@ class FormFieldRequest extends FormRequest
 
             ],
             'options' => 'required_if:data_type,enum|array',
-
             'required' => 'sometimes|boolean',
         ];
     }

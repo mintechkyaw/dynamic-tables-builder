@@ -6,15 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStoreRequest;
 use App\Http\Resources\FormResource;
 use App\Models\Form;
+use Illuminate\Http\Request;
+
 
 class FormController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return FormResource::collection(Form::all());
+        $request->validate(['status' => 'sometimes|string|in:drafted,published']);
+        if ($request->status === 'drafted') {
+            $forms = Form::where('status', 'drafted')->get();
+        } elseif ($request->status === 'published') {
+            $forms = Form::where('status', 'published')->get();
+        } else {
+            $forms = Form::all();
+        }
+        return FormResource::collection($forms);
     }
 
     /**
@@ -29,7 +39,7 @@ class FormController extends Controller
             return response()->json(
                 [
                     'msg' => 'Form Created Successfully!',
-                    'form' => $form,
+                    'form' => new FormResource($form),
                 ],
                 201
             );
@@ -63,7 +73,7 @@ class FormController extends Controller
             $form->update($data);
 
             return response()->json([
-
+                'msg' => 'Form Name Updated Successfully!'
             ], 200);
         } catch (\Throwable $th) {
             \Log::error("Error in Updating Form: {$th->getMessage()}", [

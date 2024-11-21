@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\Form::factory()
             ->has(\App\Models\FormField::factory()->count(10), 'fields') // Each form gets 10 fields
-            ->count(3)
+            ->count(5)
             ->create();
     }
 }
