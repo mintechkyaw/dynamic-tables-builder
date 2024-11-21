@@ -11,14 +11,23 @@ const router = createRouter({
     routes: [
         {
             path: "/login",
+            name:"LoginPage",
             component: LoginPage,
         },
         {
             path: "/",
             component: DashboardPage,
+            beforeEnter: (to, from, next) => {
+                const token = localStorage.getItem("token");
+                if (token) {
+                    next();
+                } else {
+                    next('/login');
+                }
+            },
             children:[
                 {
-                    name: "",
+                    name: "HomePage",
                     path:"",
                     component: HomePage,
 
