@@ -2,7 +2,9 @@
 <v-layout>
     <v-navigation-drawer v-model="drawer">
         <v-list>
-            <v-list-item title="Navigation drawer"></v-list-item>
+            <v-list-item>
+                <h3>Dynamite App</h3>
+            </v-list-item>
         </v-list>
         <v-tabs direction="vertical">
             <v-tab to="/" prepend-icon="fa-solid fa-house">
@@ -13,6 +15,9 @@
             </v-tab>
             <v-tab to="/tables" prepend-icon="fa-solid fa-database">
                 Tables
+            </v-tab>
+            <v-tab @click="logout" prepend-icon="fa-solid fa-arrow-right-from-bracket">
+                Logout
             </v-tab>
         </v-tabs>
     </v-navigation-drawer>
@@ -30,12 +35,21 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
     data() {
         return {
             drawer: null,
         }
-    }
+    },
+    methods: {
+        logout() {
+      localStorage.removeItem("token");
+      this.$store.commit('clearUser');
+      this.$router.push("/login");
+    },
+    },
 }
 </script>
 

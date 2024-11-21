@@ -11,42 +11,50 @@ const router = createRouter({
     routes: [
         {
             path: "/login",
-            name:"LoginPage",
+            name: "LoginPage",
             component: LoginPage,
         },
         {
             path: "/",
             component: DashboardPage,
-            beforeEnter: (to, from, next) => {
-                const token = localStorage.getItem("token");
-                if (token) {
-                    next();
-                } else {
-                    next('/login');
-                }
-            },
-            children:[
+            meta: { requiresAuth: true },
+            children: [
                 {
                     name: "HomePage",
-                    path:"",
+                    path: "",
                     component: HomePage,
-
                 },
                 {
-                    path:"/forms",
+                    path: "/forms",
                     component: FormsPage,
                 },
                 {
-                    path:"/tables",
-                    component:TablesPage,
+                    path: "/tables",
+                    component: TablesPage,
                 },
                 {
-                    path:"tables/:id",
+                    path: "tables/:id",
                     component: TableSubmitPage,
-                }
-            ]
-        }
+                },
+            ],
+        },
     ],
+});
+
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem("token");
+
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (!token) {
+            next("/login");
+        } else {
+            next(); // Proceed to the route
+        }
+    } else if (to.name === "LoginPage" && token) {
+        next("/");
+    } else {
+        next();
+    }
 });
 
 export default router;
