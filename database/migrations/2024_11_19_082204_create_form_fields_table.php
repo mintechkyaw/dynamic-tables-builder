@@ -17,10 +17,12 @@ return new class extends Migration
             $table->string('column_name');
             $table->enum('data_type', ['string', 'number', 'enum', 'date']);
             $table->enum('type', ['text', 'check_box', 'radio']);
-            $table->json('options');
+            $table->json('options')->nullable();
             $table->boolean(column: 'required')->default(false);
             $table->timestamps();
+            $table->unique(['form_id', 'column_name']);
         });
+
     }
 
     /**

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
-use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {
@@ -40,7 +39,12 @@ class DynamicFormController extends Controller
                 'date' => 'date',
                 default => 'string',
             };
+<<<<<<<<< Temporary merge branch 1
+            return "\$table->{$type}('{$field->column_name}')->nullable();";
+=========
+
             return "\$table->{$type}('{$field->name}')->nullable();";
+>>>>>>>>> Temporary merge branch 2
         })->implode("\n            ");
 
         $migrationContent = <<<EOT

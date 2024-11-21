@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FormFieldRequest;
+use App\Models\FormField;
 use Illuminate\Http\Request;
 
 class FormFieldController extends Controller
@@ -12,15 +14,35 @@ class FormFieldController extends Controller
      */
     public function index()
     {
-        //
+        $form_fields = FormField::all();
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FormFieldRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['options'] = isset($data['options']) ? json_encode($data['options']) : $data['options'] ?? null;
+        try {
+            FormField::create($data);
+
+            return response()->json(
+                [
+                    'msg' => 'Field Created Successfully!',
+                ],
+                201
+            );
+        } catch (\Throwable $th) {
+            \Log::error("Error in Creating FormField: {$th->getMessage()}", [
+                'exception' => $th,
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+        ], 500);
     }
 
     /**
