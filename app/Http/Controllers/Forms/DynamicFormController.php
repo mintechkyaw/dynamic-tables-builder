@@ -39,8 +39,7 @@ class DynamicFormController extends Controller
                 'date' => 'date',
                 default => 'string',
             };
-
-            return "\$table->{$type}('{$field->column_name}')->nullable();";
+            return "\$table->{$type}('{$field->name}')->nullable();";
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
