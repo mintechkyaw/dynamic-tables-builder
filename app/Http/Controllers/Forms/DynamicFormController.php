@@ -26,7 +26,7 @@ class DynamicFormController extends Controller
     public function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
-        $migrationName = 'create_' . $form->slug . '_table';
+        $migrationName = 'create_'.$form->slug.'_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
@@ -40,7 +40,7 @@ class DynamicFormController extends Controller
                 'date' => 'date',
                 default => 'string',
             };
-            return "\$table->{$type}('{$field->column_name}')->nullable();";
+            return "\$table->{$type}('{$field->name}')->nullable();";
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -67,7 +67,7 @@ class DynamicFormController extends Controller
         };
         EOT;
 
-        $filePath = database_path('migrations/' . now()->format('Y_m_d_His') . "_{$migrationName}.php");
+        $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
     }
 }
