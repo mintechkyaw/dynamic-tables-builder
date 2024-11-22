@@ -89,4 +89,27 @@ class DynamicFormController extends Controller
         $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
     }
+
+    public function insertDataIntoDynamicTable(Form $form, array $data)
+    {
+        $tableName = $form->slug;
+
+        if (empty($tableName)) {
+            throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
+        }
+
+        // Validate that the table exists
+        if (!\Schema::hasTable($tableName)) {
+            throw new \Exception("Table '{$tableName}' does not exist.");
+        }
+
+        // Insert data into the table
+        \DB::table($tableName)->insert($data);
+
+        return response()->json(['message' => 'Data inserted successfully']);
+    }
+
+
+
+
 }
