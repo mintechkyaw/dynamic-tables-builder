@@ -8,7 +8,6 @@ use App\Http\Resources\FormResource;
 use App\Models\Form;
 use Illuminate\Http\Request;
 
-
 class FormController extends Controller
 {
     /**
@@ -24,6 +23,7 @@ class FormController extends Controller
         } else {
             $forms = Form::all();
         }
+
         return FormResource::collection($forms);
     }
 
@@ -73,7 +73,7 @@ class FormController extends Controller
             $form->update($data);
 
             return response()->json([
-                'msg' => 'Form Name Updated Successfully!'
+                'msg' => 'Form Name Updated Successfully!',
             ], 200);
         } catch (\Throwable $th) {
             \Log::error("Error in Updating Form: {$th->getMessage()}", [

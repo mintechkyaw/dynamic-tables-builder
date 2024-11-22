@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (ModelNotFoundException $e, $request) {
             \Log::error("Error in Finding Model: {$e->getMessage()}", [
-                'exception' => $e
+                'exception' => $e,
             ]);
             if ($request->expectsJson()) {
                 return response()->json([
