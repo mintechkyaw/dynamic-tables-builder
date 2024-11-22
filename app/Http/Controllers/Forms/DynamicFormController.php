@@ -36,11 +36,30 @@ class DynamicFormController extends Controller
             $type = match ($field->data_type) {
                 'string' => 'string',
                 'number' => 'integer',
+                'json' => 'json',
+                'enum' => 'enum',
                 'date' => 'date',
                 default => 'string',
             };
 
-            return "\$table->{$type}('{$field->column_name}')->nullable();";
+            $columnDefinition = "\$table->{$type}('{$field->column_name}')";
+
+            if ($type === 'enum') {
+                $optionsArray = json_decode($field->options, true);
+                if (empty($optionsArray)) {
+                    throw new \Exception("Enum field '{$field->column_name}' must have non-empty options.");
+                }
+                $options = implode("', '", $optionsArray);
+                $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
+            }
+
+            if ($field->required) {
+                $columnDefinition .= "->notNullable()";
+            } else {
+                $columnDefinition .= "->nullable()";
+            }
+
+            return $columnDefinition . ";";
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
