@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
+use Illuminate\Support\Facades\Validator;
 
 class DynamicFormController extends Controller
 {
@@ -92,21 +93,47 @@ class DynamicFormController extends Controller
 
     public function insertDataIntoDynamicTable(Form $form, array $data)
     {
+        $this->validateDynamicData($form, $data);
+
         $tableName = $form->slug;
 
         if (empty($tableName)) {
             throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
         }
 
-        // Validate that the table exists
         if (!\Schema::hasTable($tableName)) {
             throw new \Exception("Table '{$tableName}' does not exist.");
         }
 
-        // Insert data into the table
         \DB::table($tableName)->insert($data);
 
         return response()->json(['message' => 'Data inserted successfully']);
+    }
+
+    public function validateDynamicData(Form $form, array $data)
+    {
+        $rules = $form->fields->mapWithKeys(function ($field) {
+            $rule = match ($field->data_type) {
+                'string' => 'string',
+                'number' => 'numeric',
+                'json' => 'json',
+                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
+                'date' => 'date',
+                default => 'string',
+            };
+
+            if ($field->required) {
+                $rule .= '|required';
+            }
+
+            return [$field->column_name => $rule];
+        })->toArray();
+
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->fails()) {
+            throw new \Exception('Validation failed: ' . implode(', ', $validator->errors()->all()));
+        }
     }
 
 
