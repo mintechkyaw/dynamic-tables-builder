@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {
@@ -91,8 +92,9 @@ class DynamicFormController extends Controller
         file_put_contents($filePath, $migrationContent);
     }
 
-    public function insertDataIntoDynamicTable(Form $form, array $data)
+    public function insertDataIntoDynamicTable(Form $form, Request $request)
     {
+        $data = $request->all();
         //I want to make only published form can be submitted
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
