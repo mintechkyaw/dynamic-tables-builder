@@ -24,4 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('forms', FormController::class);
     Route::apiResource('form_fields', FormFieldController::class);
     Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
+    Route::post('forms/{form}/submit', [DynamicFormController::class, 'insertDataIntoDynamicTable']);
 });
+
+

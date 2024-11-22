@@ -93,6 +93,11 @@ class DynamicFormController extends Controller
 
     public function insertDataIntoDynamicTable(Form $form, array $data)
     {
+        //I want to make only published form can be submitted
+        if ($form->status !== 'published') {
+            return response()->json(['error' => 'Form is not published'], 400);
+        }
+
         $this->validateDynamicData($form, $data);
 
         $tableName = $form->slug;
