@@ -35,7 +35,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import {
+    mapActions
+} from 'vuex';
 
 export default {
     data() {
@@ -45,10 +47,14 @@ export default {
     },
     methods: {
         logout() {
-      localStorage.removeItem("token");
-      this.$store.commit('clearUser');
-      this.$router.push("/login");
+            localStorage.removeItem("token");
+            this.$store.commit('clearUser');
+            this.$router.push("/login");
+        },
+        ...mapActions(['fetchForms'])
     },
+    mounted () {
+       this.fetchForms();
     },
 }
 </script>

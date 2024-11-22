@@ -26,7 +26,7 @@ export default {
                 });
                 commit("setAuthUser", data.user);
                 localStorage.setItem("token", data.token);
-                console.log(data);
+                // console.log(data);
             } catch (e) {
                 console.error("Login error:", e.message);
                 throw new Error(
