@@ -20,7 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->userName() . '@gmail.com',
+            'email' => fake()->unique()->userName().'@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Pa$$w0rd!'),
             'remember_token' => Str::random(10),
