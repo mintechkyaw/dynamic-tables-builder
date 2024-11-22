@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\FormFieldRequest;
+use App\Http\Resources\FormFieldResource;
+use App\Models\FormField;
 
 class FormFieldController extends Controller
 {
@@ -12,38 +14,131 @@ class FormFieldController extends Controller
      */
     public function index()
     {
-        //
+        $form_fields = FormField::all();
+
+        return FormFieldResource::collection($form_fields);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FormFieldRequest $request)
     {
-        //
+        $data = $request->validated();
+        switch ($data['type']) {
+            case 'text':
+                $data['data_type'] = 'string';
+                break;
+            case 'number':
+                $data['data_type'] = 'integer';
+                break;
+            case 'check_box':
+                $data['data_type'] = 'json';
+                break;
+            case 'radio':
+                $data['data_type'] = 'enum';
+                break;
+            default:
+                break;
+        }
+        $data['options'] = isset($data['options']) &&
+            ($data['type'] === 'check_box' || $data['type'] === 'radio')
+            ? json_encode($data['options']) : null;
+        try {
+            FormField::create($data);
+
+            return response()->json(
+                [
+                    'msg' => 'Field Created Successfully!',
+                ],
+                201
+            );
+        } catch (\Throwable $th) {
+            \Log::error("Error in Creating FormField: {$th->getMessage()}", [
+                'exception' => $th,
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+        ], 500);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(FormField $formField)
     {
-        //
+        return new FormFieldResource($formField);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(FormFieldRequest $request, FormField $formField)
     {
-        //
+        if ($formField->form->status === 'drafted') {
+            $data = $request->validated();
+            switch ($data['type']) {
+                case 'text':
+                    $data['data_type'] = 'string';
+                    break;
+                case 'number':
+                    $data['data_type'] = 'integer';
+                    break;
+                case 'check_box':
+                    $data['data_type'] = 'json';
+                    break;
+                case 'radio':
+                    $data['data_type'] = 'enum';
+                    break;
+                default:
+                    break;
+            }
+            $data['options'] = isset($data['options']) &&
+                ($data['type'] === 'check_box' || $data['type'] === 'radio')
+                ? json_encode($data['options']) : null;
+            try {
+                $formField->update($data);
+
+                return response()->json([
+                    'msg' => 'Form Field Updated!',
+                ], 202);
+            } catch (\Throwable $th) {
+                \Log::error("Error in Updating Form: {$th->getMessage()}", [
+                    'exception' => $th,
+                ]);
+            }
+
+            return response()->json([
+                'error' => true,
+            ], 500);
+        }
+
+        return response()->json([
+            'error' => 'Form had been published!',
+        ], 403);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(FormField $formField)
     {
-        //
+        try {
+            $formField->delete();
+
+            return response()->json([
+                'msg' => 'Form Deleted Successfully!',
+            ]);
+        } catch (\Throwable $th) {
+            \Log::error("Error in Deleting Form Field: {$th->getMessage()}", [
+                'exception' => $th,
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+        ], 500);
     }
 }
