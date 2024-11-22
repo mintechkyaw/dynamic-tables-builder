@@ -28,10 +28,10 @@ export default {
         isLoading: false,
     }),
     computed: {
-       ...mapGetters(["getForms"]),
+       ...mapGetters(["getForms","getForm"]),
     },
     methods: {
-        ...mapActions(["createForm"]),
+        ...mapActions(["createForm","fetchFormById"]),
         async submitBtn() {
             try {
                 this.isLoading = true;
@@ -48,7 +48,7 @@ export default {
         }
     },
     mounted () {
-        console.log(this.getForms);
+        // console.log(this.getForms);
     },
 }
 </script>
