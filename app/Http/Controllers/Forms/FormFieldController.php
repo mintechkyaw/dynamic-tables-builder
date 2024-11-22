@@ -15,6 +15,7 @@ class FormFieldController extends Controller
     public function index()
     {
         $form_fields = FormField::all();
+
         return FormFieldResource::collection($form_fields);
     }
 
@@ -62,20 +63,23 @@ class FormFieldController extends Controller
             $data = $request->validated();
             try {
                 $formField->update($data);
+
                 return response()->json([
-                    'msg' => 'Form Field Updated!'
+                    'msg' => 'Form Field Updated!',
                 ], 202);
             } catch (\Throwable $th) {
                 \Log::error("Error in Updating Form: {$th->getMessage()}", [
                     'exception' => $th,
                 ]);
             }
+
             return response()->json([
                 'error' => true,
             ], 500);
         }
+
         return response()->json([
-            'error' => "Form had been published!"
+            'error' => 'Form had been published!',
         ], 403);
     }
 

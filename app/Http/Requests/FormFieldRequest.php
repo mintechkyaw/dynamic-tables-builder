@@ -15,7 +15,6 @@ class FormFieldRequest extends FormRequest
         // return auth()->user()->forms()->where('id', $this->form_id)->exists();
         return true;
 
-
     }
 
     /**
@@ -27,7 +26,7 @@ class FormFieldRequest extends FormRequest
     {
         if (request()->isMethod('put') || request()->isMethod('patch')) {
             return [
-                'column_name' => 'sometimes|string|max:255|' .
+                'column_name' => 'sometimes|string|max:255|'.
                     Rule::unique('form_fields')->where(function ($query) {
                         return $query->where('form_id', $this->form_id);
                     })->ignore($this->route('form_field')->id),
@@ -43,12 +42,13 @@ class FormFieldRequest extends FormRequest
                 'required' => 'sometimes|boolean',
             ];
         }
+
         return [
             'form_id' => 'required|exists:forms,id',
-            'column_name' => 'required|string|max:255|' .
+            'column_name' => 'required|string|max:255|'.
                 Rule::unique('form_fields')->where(function ($query) {
                     return $query->where('form_id', $this->form_id);
-                })->ignore($this->route('form_field')->id),
+                }),
             'data_type' => 'required|string|in:string,number,enum,date',
             'type' => [
                 'required',
