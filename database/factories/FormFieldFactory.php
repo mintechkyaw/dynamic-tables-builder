@@ -19,8 +19,8 @@ class FormFieldFactory extends Factory
         return [
             'form_id' => \App\Models\Form::factory(),
             'column_name' => $this->faker->unique()->word(),
-            'data_type' => $this->faker->randomElement(['string', 'number', 'enum', 'date']),
-            'type' => $this->faker->randomElement(['text', 'check_box', 'radio']),
+            'data_type' => $this->faker->randomElement(['string', 'integer', 'json', 'enum', 'date']),
+            'type' => $this->faker->randomElement(['text', 'number', 'check_box', 'radio', 'calendar']),
             'options' => $this->faker->randomElement([
                 json_encode(['option1', 'option2', 'option3']),
                 json_encode(['yes', 'no']),

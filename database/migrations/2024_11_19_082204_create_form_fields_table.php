@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -14,10 +15,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('form_id')->constrained()->cascadeOnDelete();
             $table->string('column_name');
-            $table->enum('data_type', ['string', 'number', 'json', 'enum', 'date']);
+            $table->enum('data_type', ['string', 'integer', 'json', 'enum', 'date']);
             $table->enum('type', ['text', 'number', 'check_box', 'radio', 'calendar']);
-            $table->json('options')->nullable();
-            $table->boolean(column: 'required')->default(false);
+            $table->json('options');
+            $table->boolean('required')->default(false);
             $table->timestamps();
             $table->unique(['form_id', 'column_name']);
         });
