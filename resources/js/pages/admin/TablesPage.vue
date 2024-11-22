@@ -50,7 +50,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchTables(); // Dispatch the Vuex action to fetch tables
+        this.fetchTables();
     },
 };
 </script>
