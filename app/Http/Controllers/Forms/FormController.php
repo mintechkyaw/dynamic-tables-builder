@@ -15,7 +15,7 @@ class FormController extends Controller
      */
     public function index(Request $request)
     {
-        $request->validate(['status' => 'sometimes|string|in:drafted,published']);
+        $request->validate(['status' => 'nullable|string|in:drafted,published']);
         if ($request->status === 'drafted') {
             $forms = Form::where('status', 'drafted')->get();
         } elseif ($request->status === 'published') {
