@@ -40,11 +40,6 @@
       </v-container>
     </v-app>
   </template>
-
-  ---
-
-  ### Script Section
-  ```javascript
   <script>
   import { mapGetters } from "vuex/dist/vuex.cjs.js";
 
@@ -62,10 +57,10 @@
       };
     },
     computed: {
-      ...mapGetters(["formandfields"]),
+      ...mapGetters(["getForms"]),
     },
     watch: {
-      formandfields: {
+        getForms: {
         handler(value) {
           if (value?.form_fields) {
             value.form_fields.forEach((field) => {
@@ -103,7 +98,7 @@
           }
         }
       },
-      async fetchFormandFieldsData() {
+      async form() {
         console.log("Fetching form and fields data...");
         const id = this.$route.params.id;
         try {
@@ -114,21 +109,7 @@
       },
     },
     mounted() {
-      this.fetchFormandFieldsData();
+      this.form();
     },
   };
   </script>
-
-<!-- async formandfields({ commit }, id) {
-    try {
-        const res = await api.get(`/forms/${id}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-        });
-        commit("SET_FORM_DATA", res.data); // Update formData with API response
-    } catch (error) {
-        console.error("Error fetching form data:", error);
-    }
-}, -->

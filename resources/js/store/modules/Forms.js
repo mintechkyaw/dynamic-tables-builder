@@ -18,7 +18,6 @@ export default {
         async fetchForms({ commit }) {
             try {
                 const { data } = await api.get("/forms");
-                // console.log(data);
                 commit("setForms", data.data);
             } catch (e) {
                 throw new Error(e.response?.data?.message);

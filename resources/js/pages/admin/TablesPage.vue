@@ -36,14 +36,14 @@ import { mapGetters } from "vuex";
 
 export default {
     computed: {
-        ...mapGetters(["tables"]),
+        ...mapGetters(["getForms"]),
         publishedTables() {
-            return this.tables?.filter((table) => table.status === "published");
+            return this.getForms?.filter((table) => table.status === "published");
         },
     },
     methods: {
         async fetchTables() {
-            await this.$store.dispatch("fetchTables");
+            await this.$store.dispatch("fetchForms");
         },
         SubmitTable(id) {
             this.$router.push(`/tables/${id}`);
