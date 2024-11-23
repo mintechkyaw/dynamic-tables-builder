@@ -54,5 +54,19 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
+        async submitFormField({ commit }, form) {
+            try {
+                const res = await api.post(`/forms/${form.id}`, {
+                    column_name: form.name,
+                    data_type: form.data_type,
+                    type: form.type,
+                    options: form.options,
+                    required: form.require,
+                });
+                console.log(res);
+            } catch (e) {
+                throw new Error(e.response?.data?.message);
+            }
+        },
     },
 };
