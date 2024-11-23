@@ -7,6 +7,7 @@ use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {
@@ -16,18 +17,21 @@ class DynamicFormController extends Controller
             return response()->json(['error' => 'Form is already published'], 400);
         }
 
-        $this->generateDynamicMigration($form);
-        Artisan::call('migrate');
-
-        $form->update(['status' => 'published']);
-
-        return response()->json(['message' => 'Form published successfully']);
+        try {
+            $this->generateDynamicMigration($form);
+            Artisan::call('migrate');
+            $form->update(['status' => 'published']);
+            return response()->json(['message' => 'Form published successfully']);
+        } catch (\Exception $e) {
+            \Log::error("Error publishing form: {$e->getMessage()}");
+            return response()->json(['error' => 'Failed to publish form'], 500);
+        }
     }
 
     public function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
-        $migrationName = 'create_'.$form->slug.'_table';
+        $migrationName = 'create_' . $form->slug . '_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
@@ -56,12 +60,12 @@ class DynamicFormController extends Controller
             }
 
             if ($field->required) {
-                $columnDefinition .= '->notNullable()';
+                $columnDefinition .= "->notNullable()";
             } else {
-                $columnDefinition .= '->nullable()';
+                $columnDefinition .= "->nullable()";
             }
 
-            return $columnDefinition.';';
+            return $columnDefinition . ";";
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -88,18 +92,50 @@ class DynamicFormController extends Controller
         };
         EOT;
 
-        $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
+        $filePath = database_path('migrations/' . now()->format('Y_m_d_His') . "_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
+    }
+
+    private function getFieldDefinitions($fields)
+    {
+        return $fields->map(function ($field) {
+            $type = $this->getFieldType($field->data_type);
+            $columnDefinition = "\$table->{$type}('{$field->column_name}')";
+
+            if ($type === 'enum') {
+                $optionsArray = json_decode($field->options, true);
+                if (empty($optionsArray)) {
+                    throw new \Exception("Enum field '{$field->column_name}' must have non-empty options.");
+                }
+                $options = implode("', '", $optionsArray);
+                $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
+            }
+
+            $columnDefinition .= $field->required ? "->notNullable()" : "->nullable()";
+
+            return $columnDefinition . ";";
+        })->implode("\n            ");
+    }
+
+    private function getFieldType($dataType)
+    {
+        return match ($dataType) {
+            'string' => 'string',
+            'integer' => 'integer',
+            'json' => 'json',
+            'enum' => 'enum',
+            'date' => 'date',
+            default => 'string',
+        };
     }
 
     public function insertDataIntoDynamicTable(Form $form, Request $request)
     {
-        $data = $request->all();
-        //I want to make only published form can be submitted
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
         }
 
+        $data = $request->all();
         $this->validateDynamicData($form, $data);
 
         $tableName = $form->slug;
@@ -108,11 +144,11 @@ class DynamicFormController extends Controller
             throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
         }
 
-        if (! \Schema::hasTable($tableName)) {
+        if (!\Schema::hasTable($tableName)) {
             throw new \Exception("Table '{$tableName}' does not exist.");
         }
 
-        \DB::table($tableName)->insert($data);
+        DB::table($tableName)->insert($data);
 
         return response()->json(['message' => 'Data inserted successfully']);
     }
@@ -124,7 +160,7 @@ class DynamicFormController extends Controller
                 'string' => 'string',
                 'number' => 'numeric',
                 'json' => 'json',
-                'enum' => 'in:'.implode(',', json_decode($field->options, true)),
+                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
                 'date' => 'date',
                 default => 'string',
             };
@@ -142,4 +178,8 @@ class DynamicFormController extends Controller
             throw new \Exception('Validation failed: '.implode(', ', $validator->errors()->all()));
         }
     }
+
+
+
+
 }

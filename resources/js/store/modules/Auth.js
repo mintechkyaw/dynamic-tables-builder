@@ -26,6 +26,7 @@ export default {
                 });
                 commit("setAuthUser", data.user);
                 localStorage.setItem("token", data.token);
+                api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
                 // console.log(data);
             } catch (e) {
                 console.error("Login error:", e.message);

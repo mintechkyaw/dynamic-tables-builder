@@ -3,7 +3,7 @@ import api from "../../api/axios";
 export default {
     state: {
         forms: [],
-        form: [],
+        form: {},
     },
     getters: {
         getForms(state) {
@@ -19,6 +19,9 @@ export default {
         },
         setForm(state, form) {
             state.form = form;
+        },
+        updateForms(state, newForm) {
+            state.forms.push(newForm);
         },
     },
     actions: {
@@ -37,7 +40,8 @@ export default {
                     name: form.formName,
                     slug: form.slug,
                 });
-                console.log(data);
+                // console.log(data);
+                commit("updateForms", data.form);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }

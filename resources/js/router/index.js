@@ -5,6 +5,7 @@ import HomePage from "../pages/admin/HomePage.vue";
 import FormsPage from "../pages/admin/FormsPage.vue";
 import TablesPage from "../pages/admin/TablesPage.vue";
 import TableSubmitPage from "../pages/admin/TableSubmitPage.vue";
+import FormFieldPage from "../pages/admin/FormFieldPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -25,16 +26,24 @@ const router = createRouter({
                     component: HomePage,
                 },
                 {
+                    name: "FormPage",
                     path: "/forms",
                     component: FormsPage,
                 },
                 {
+                    name: "TablesPage",
                     path: "/tables",
                     component: TablesPage,
                 },
                 {
+                    name: "TableSubmitPage",
                     path: "tables/:id",
                     component: TableSubmitPage,
+                },
+                {
+                    name: "FormFieldPage",
+                    path: "/form_field/:id",
+                    component: FormFieldPage,
                 },
             ],
         },

@@ -53,8 +53,8 @@ export default {
         },
         ...mapActions(['fetchForms'])
     },
-    mounted () {
-       this.fetchForms();
+    created () {
+        // this.fetchForms();
     },
 }
 </script>
