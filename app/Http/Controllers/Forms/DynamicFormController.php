@@ -7,7 +7,6 @@ use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 
 class DynamicFormController extends Controller
 {

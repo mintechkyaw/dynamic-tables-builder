@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('column_name');
             $table->enum('data_type', ['string', 'integer', 'json', 'enum', 'date']);
             $table->enum('type', ['text', 'number', 'check_box', 'radio', 'calendar']);
-            $table->json('options');
+            $table->json('options')->nullable();
             $table->boolean('required')->default(false);
             $table->timestamps();
             $table->unique(['form_id', 'column_name']);

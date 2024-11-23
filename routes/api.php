@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Forms\DynamicFormController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormFieldController;
+use App\Http\Controllers\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,4 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('form_fields', FormFieldController::class);
     Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
     Route::post('forms/{form}/submit', [DynamicFormController::class, 'insertDataIntoDynamicTable']);
+
+    Route::apiResource('users', UserController::class);
 });
