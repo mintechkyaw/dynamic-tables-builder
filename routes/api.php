@@ -17,14 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Auth routes
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'authUserInfo']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::apiResource('forms', FormController::class);
     Route::apiResource('form_fields', FormFieldController::class);
     Route::post('forms/{form}/publish', [DynamicFormController::class, 'publish']);
     Route::post('forms/{form}/submit', [DynamicFormController::class, 'insertDataIntoDynamicTable']);
 });
-
-

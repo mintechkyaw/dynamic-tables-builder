@@ -49,7 +49,7 @@ class FormFieldController extends Controller
 
             return response()->json(
                 [
-                    'msg' => 'Field Created Successfully!',
+                    'message' => 'Field Created Successfully!',
                 ],
                 201
             );
@@ -102,7 +102,7 @@ class FormFieldController extends Controller
                 $formField->update($data);
 
                 return response()->json([
-                    'msg' => 'Form Field Updated!',
+                    'message' => 'Form Field Updated!',
                 ], 202);
             } catch (\Throwable $th) {
                 \Log::error("Error in Updating Form: {$th->getMessage()}", [
@@ -129,7 +129,7 @@ class FormFieldController extends Controller
             $formField->delete();
 
             return response()->json([
-                'msg' => 'Form Deleted Successfully!',
+                'message' => 'Form Deleted Successfully!',
             ]);
         } catch (\Throwable $th) {
             \Log::error("Error in Deleting Form Field: {$th->getMessage()}", [

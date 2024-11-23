@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Auth\AuthUserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -37,7 +38,7 @@ class AuthController extends Controller
     public function login()
     {
         $validator = Validator::make(request()->all(), [
-            'email' => ['required', 'email', 'email:rfc,dns'],
+            'email' => ['required', 'email', ],
             'password' => ['required', 'min:6', 'max:30'],
         ]);
 
@@ -50,7 +51,7 @@ class AuthController extends Controller
 
         $user = User::where('email', request('email'))->first();
 
-        if (! $user) {
+        if (!$user) {
             return response()->json([
                 'message' => "Email doesn't exists.",
             ], 422);
@@ -58,7 +59,7 @@ class AuthController extends Controller
 
         $isPasswordCorrect = Hash::check(request('password'), $user->password);
 
-        if (! $isPasswordCorrect) {
+        if (!$isPasswordCorrect) {
             return response()->json([
                 'message' => 'Password Incorrect.',
             ], 422);
@@ -69,7 +70,22 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login Success.',
             'token' => $token,
-            'user' => $user,
+            'user' => new AuthUserResource($user),
         ], 200);
+    }
+
+    public function logout()
+    {
+        request()->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout successful.',
+        ], 200);
+    }
+
+    public function authUserInfo()
+    {
+        $user = auth()->user();
+        return new AuthUserResource($user);
     }
 }

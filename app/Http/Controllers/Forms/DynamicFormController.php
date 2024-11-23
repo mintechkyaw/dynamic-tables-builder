@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Forms;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DynamicFormController extends Controller
 {
@@ -56,12 +56,12 @@ class DynamicFormController extends Controller
             }
 
             if ($field->required) {
-                $columnDefinition .= "->notNullable()";
+                $columnDefinition .= '->notNullable()';
             } else {
-                $columnDefinition .= "->nullable()";
+                $columnDefinition .= '->nullable()';
             }
 
-            return $columnDefinition . ";";
+            return $columnDefinition.';';
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -108,7 +108,7 @@ class DynamicFormController extends Controller
             throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
         }
 
-        if (!\Schema::hasTable($tableName)) {
+        if (! \Schema::hasTable($tableName)) {
             throw new \Exception("Table '{$tableName}' does not exist.");
         }
 
@@ -124,7 +124,7 @@ class DynamicFormController extends Controller
                 'string' => 'string',
                 'number' => 'numeric',
                 'json' => 'json',
-                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
+                'enum' => 'in:'.implode(',', json_decode($field->options, true)),
                 'date' => 'date',
                 default => 'string',
             };
@@ -139,11 +139,7 @@ class DynamicFormController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            throw new \Exception('Validation failed: ' . implode(', ', $validator->errors()->all()));
+            throw new \Exception('Validation failed: '.implode(', ', $validator->errors()->all()));
         }
     }
-
-
-
-
 }
