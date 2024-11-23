@@ -33,6 +33,7 @@ class UserFactory extends Factory
             $user->assignRole($role);
         });
     }
+
     /**
      * Indicate that the model's email address should be unverified.
      *

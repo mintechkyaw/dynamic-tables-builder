@@ -20,9 +20,11 @@ class DynamicFormController extends Controller
             $this->generateDynamicMigration($form);
             Artisan::call('migrate');
             $form->update(['status' => 'published']);
+
             return response()->json(['message' => 'Form published successfully']);
         } catch (\Exception $e) {
             \Log::error("Error publishing form: {$e->getMessage()}");
+
             return response()->json(['error' => 'Failed to publish form'], 500);
         }
     }
@@ -30,7 +32,7 @@ class DynamicFormController extends Controller
     public function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
-        $migrationName = 'create_' . $form->slug . '_table';
+        $migrationName = 'create_'.$form->slug.'_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
@@ -59,12 +61,12 @@ class DynamicFormController extends Controller
             }
 
             if ($field->required) {
-                $columnDefinition .= "->notNullable()";
+                $columnDefinition .= '->notNullable()';
             } else {
-                $columnDefinition .= "->nullable()";
+                $columnDefinition .= '->nullable()';
             }
 
-            return $columnDefinition . ";";
+            return $columnDefinition.';';
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -91,7 +93,7 @@ class DynamicFormController extends Controller
         };
         EOT;
 
-        $filePath = database_path('migrations/' . now()->format('Y_m_d_His') . "_{$migrationName}.php");
+        $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
     }
 
@@ -110,9 +112,9 @@ class DynamicFormController extends Controller
                 $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
             }
 
-            $columnDefinition .= $field->required ? "->notNullable()" : "->nullable()";
+            $columnDefinition .= $field->required ? '->notNullable()' : '->nullable()';
 
-            return $columnDefinition . ";";
+            return $columnDefinition.';';
         })->implode("\n            ");
     }
 
@@ -143,11 +145,11 @@ class DynamicFormController extends Controller
             throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
         }
 
-        if (!\Schema::hasTable($tableName)) {
+        if (! \Schema::hasTable($tableName)) {
             throw new \Exception("Table '{$tableName}' does not exist.");
         }
 
-        DB::table($tableName)->insert($data);
+        \DB::table($tableName)->insert($data);
 
         return response()->json(['message' => 'Data inserted successfully']);
     }
@@ -159,7 +161,7 @@ class DynamicFormController extends Controller
                 'string' => 'string',
                 'number' => 'numeric',
                 'json' => 'json',
-                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
+                'enum' => 'in:'.implode(',', json_decode($field->options, true)),
                 'date' => 'date',
                 default => 'string',
             };
@@ -177,8 +179,4 @@ class DynamicFormController extends Controller
             throw new \Exception('Validation failed: '.implode(', ', $validator->errors()->all()));
         }
     }
-
-
-
-
 }

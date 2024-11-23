@@ -30,6 +30,7 @@ class AuthController extends Controller
             'password' => Hash::make(request('password')),
         ]);
         $user->assignRole('user');
+
         return response()->json([
             'message' => 'User account successfully created. Please Login',
         ]);
@@ -51,7 +52,7 @@ class AuthController extends Controller
 
         $user = User::where('email', request('email'))->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => "Email doesn't exists.",
             ], 422);
@@ -59,7 +60,7 @@ class AuthController extends Controller
 
         $isPasswordCorrect = Hash::check(request('password'), $user->password);
 
-        if (!$isPasswordCorrect) {
+        if (! $isPasswordCorrect) {
             return response()->json([
                 'message' => 'Password Incorrect.',
             ], 422);
@@ -86,6 +87,7 @@ class AuthController extends Controller
     public function authUserInfo()
     {
         $user = auth()->user();
+
         return new UserResource($user);
     }
 }
