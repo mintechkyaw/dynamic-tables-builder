@@ -54,11 +54,23 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async submitFormField({ commit }, fieldData ) {
+        async submitFormField({ commit }, fieldData) {
             try {
-                const res = await api.post(`/form_fields`,fieldData);
-                console.log(res);
+                const res = await api.post(`/form_fields`, fieldData);
+                // console.log(res);
+                alert(res.data.message);
             } catch (e) {
+                alert(e.response?.data?.message)
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async deleteField({ commit }, id) {
+            try {
+                const res = await api.delete(`/form_fields/${id}`);
+                // console.log(res);
+                alert(res.data.message);
+            } catch (e) {
+                alert(e.response?.data?.message)
                 throw new Error(e.response?.data?.message);
             }
         },
