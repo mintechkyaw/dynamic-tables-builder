@@ -60,7 +60,7 @@ export default {
                 // console.log(res);
                 alert(res.data.message);
             } catch (e) {
-                alert(e.response?.data?.message)
+                alert(e.response?.data?.message);
                 throw new Error(e.response?.data?.message);
             }
         },
@@ -70,7 +70,17 @@ export default {
                 // console.log(res);
                 alert(res.data.message);
             } catch (e) {
-                alert(e.response?.data?.message)
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async submitFormToDatabase({ commit }, form) {
+            try {
+                const res = await api.post(`/forms/${form.id}/publish`);
+                // console.log(form);
+                console.log(res);
+            } catch (e) {
+                alert(e.response?.data?.message);
                 throw new Error(e.response?.data?.message);
             }
         },

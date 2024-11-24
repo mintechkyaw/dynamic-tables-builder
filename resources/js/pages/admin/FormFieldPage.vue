@@ -35,9 +35,10 @@
         <v-col cols="8">
             <div class="mb-2">
                 <h1>Field Lists</h1>
-                <p>Status: <span class="text-red-lighten-1 mb-5">{{ getForm.status }}</span></p>
+                <p>Status: <span class="text-red-lighten-1 mb-5">{{ getForm.status }} {{ getForm.user_id }}</span></p>
             </div>
             <div>
+                <v-btn @click="submitFormToDatabaseBtn(getForm)" color="success">Create Table</v-btn>
                 <v-table>
                     <thead>
                         <tr>
@@ -54,7 +55,9 @@
                             <td>{{ field.data_type }}</td>
                             <td>{{field.type}}</td>
                             <td>{{ field.options }}</td>
-                            <td><v-btn @click="deleteFieldBtn(field.id)" size="x-small" color="danger" icon="fa-regular fa-trash-can"></v-btn></td>
+                            <td>
+                                <v-btn @click="deleteFieldBtn(field.id)" size="x-small" color="danger" icon="fa-regular fa-trash-can"></v-btn>
+                            </td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -81,6 +84,7 @@ export default {
             options: [],
             required: false,
             isLoading: false,
+            form: {}
         }
     },
     computed: {
@@ -102,9 +106,10 @@ export default {
     async created() {
         const formId = this.$route.params.id;
         await this.fetchFormById(formId);
+        console.log(this.form);
     },
     methods: {
-        ...mapActions(["fetchFormById", "submitFormField","deleteField"]),
+        ...mapActions(["fetchFormById", "submitFormField", "deleteField", "submitFormToDatabase"]),
         addOption() {
             if (this.newOption.trim() !== "") {
                 this.options.push(this.newOption.trim());
@@ -143,10 +148,13 @@ export default {
             this.options = [];
             this.required = false;
         },
-        async deleteFieldBtn(id){
+        async deleteFieldBtn(id) {
             await this.deleteField(id);
             const formId = this.$route.params.id;
             this.fetchFormById(formId);
+        },
+        async submitFormToDatabaseBtn(form) {
+            await this.submitFormToDatabase(form);
         }
     },
 }
