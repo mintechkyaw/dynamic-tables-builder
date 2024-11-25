@@ -7,19 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create('njjioklk', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('age')->notNullable();
-            $table->string('asdf')->notNullable();
             $table->string('name')->notNullable();
-            $table->enum('rewrwe', ['asdf', 'asdf', 'asf'])->notNullable();
-            $table->json('tttt')->notNullable();
+            $table->json('terertsadf')->notNullable();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('njjioklk');
     }
 };

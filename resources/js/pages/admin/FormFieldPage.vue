@@ -38,7 +38,7 @@
                 <p>Status: <span class="text-red-lighten-1 mb-5">{{ getForm.status }} {{ getForm.user_id }}</span></p>
             </div>
             <div>
-                <v-btn @click="submitFormToDatabaseBtn(getForm)" color="success">Create Table</v-btn>
+                <v-btn :loading="publishBtn" @click="submitFormToDatabaseBtn(getForm.id)" color="success">Create Table</v-btn>
                 <v-table>
                     <thead>
                         <tr>
@@ -84,7 +84,8 @@ export default {
             options: [],
             required: false,
             isLoading: false,
-            form: {}
+            form: {},
+            publishBtn :false,
         }
     },
     computed: {
@@ -153,8 +154,11 @@ export default {
             const formId = this.$route.params.id;
             this.fetchFormById(formId);
         },
-        async submitFormToDatabaseBtn(form) {
-            await this.submitFormToDatabase(form);
+        async submitFormToDatabaseBtn(id) {
+            this.publishBtn = true;
+            await this.submitFormToDatabase(id);
+            this.publishBtn = false;
+            this.$router.push("/forms");
         }
     },
 }

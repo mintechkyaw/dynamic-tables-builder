@@ -74,9 +74,9 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async submitFormToDatabase({ commit }, form) {
+        async submitFormToDatabase({ commit }, id) {
             try {
-                const res = await api.post(`/forms/${form.id}/publish`);
+                const res = await api.post(`/forms/${id}/publish`);
                 // console.log(form);
                 console.log(res);
             } catch (e) {
