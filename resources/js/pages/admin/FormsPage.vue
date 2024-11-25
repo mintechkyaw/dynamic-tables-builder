@@ -42,8 +42,10 @@
                     </td>
                     <td>
                         <router-link :to="`/form_field/${form.id}`">
-                            <v-btn v-if="form.status =='drafted'" size="small" color="info">Add Fields</v-btn>
+                            <v-btn v-if="form.status =='drafted'" size="x-small" color="info" class="me-1">Add Fields</v-btn>
                         </router-link>
+                        <v-btn @click="delBtn(form.id)" :loading="loadingStates[form.id]"
+                        :disabled="loadingStates[form.id]"  size="x-small" color="error">Delete</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -69,12 +71,14 @@ export default {
         },
         errorMessage: "",
         isLoading: false,
+        delBtnLoading: false,
+        loadingStates: {},
     }),
     computed: {
         ...mapGetters(["getForms", "getForm"]),
     },
     methods: {
-        ...mapActions(["fetchForms","createForm", "fetchFormById"]),
+        ...mapActions(["fetchForms", "createForm", "fetchFormById", "deleteForm"]),
         async submitBtn() {
             try {
                 this.isLoading = true;
@@ -87,6 +91,17 @@ export default {
                 alert(error.message);
             } finally {
                 this.isLoading = false;
+            }
+        },
+        async delBtn(id) {
+            try {
+                this.loadingStates[id] = true;
+                await this.deleteForm(id);
+                this.loadingStates[id] = true;
+                this.fetchForms();
+            } catch (error) {
+                this.loadingStates[id] = true;
+                alert(error.message);
             }
         }
     },

@@ -84,5 +84,15 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
+        async deleteForm({ commit }, id) {
+            try {
+                const res = await api.delete(`/forms/${id}`);
+                console.log(res);
+                alert(res.data.message);
+            } catch (error) {
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
+            }
+        },
     },
 };

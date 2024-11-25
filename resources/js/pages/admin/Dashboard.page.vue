@@ -26,6 +26,12 @@
         <v-btn color="" @click.stop="drawer = !drawer">
             <v-icon icon="fa-solid fa-bars" />
         </v-btn>
+        <v-spacer></v-spacer>
+        <div class="me-6">
+            <v-icon left icon="fa fa-user" class="me-1"></v-icon>
+            <span v-if="authUser">{{ authUser.name }}</span>
+            <span v-else>Loading...</span>
+        </div>
     </v-app-bar>
 
     <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
@@ -36,7 +42,8 @@
 
 <script>
 import {
-    mapActions
+    mapActions,
+    mapGetters
 } from 'vuex';
 
 export default {
@@ -51,14 +58,14 @@ export default {
             this.$store.commit('clearUser');
             this.$router.push("/login");
         },
-        ...mapActions(['fetchForms'])
+        ...mapActions(['fetchForms', 'authUserApi'])
     },
-    created () {
+    computed: {
+        ...mapGetters(["authUser"]),
+    },
+    created() {
         // this.fetchForms();
+        this.authUserApi();
     },
 }
 </script>
-
-<style>
-
-</style>
