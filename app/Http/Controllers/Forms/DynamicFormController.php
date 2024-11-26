@@ -7,6 +7,9 @@ use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class DynamicFormController extends Controller
 {
@@ -23,15 +26,13 @@ class DynamicFormController extends Controller
 
             return response()->json(['message' => 'Form published successfully']);
         } catch (\Exception $e) {
-
-
+            Log::error("Error publishing form: {$e->getMessage()}", ['exception' => $e]);
             return response()->json(['error' => 'Failed to publish form'], 500);
         }
     }
 
     public function generateDynamicMigration(Form $form)
     {
-
         $fields = $form->fields;
         $migrationName = 'create_' . $form->slug . '_table';
         $tableName = $form->slug;
@@ -138,7 +139,10 @@ class DynamicFormController extends Controller
         }
 
         $data = $request->all();
-        $this->validateDynamicData($form, $data);
+        $validationResponse = $this->validateDynamicData($form, $data);
+        if ($validationResponse) {
+            return $validationResponse;
+        }
 
         foreach ($form->fields as $field) {
             if ($field->data_type === 'json' && isset($data[$field->column_name])) {
@@ -152,13 +156,17 @@ class DynamicFormController extends Controller
             return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
         }
 
-        if (!\Schema::hasTable($tableName)) {
+        if (!Schema::hasTable($tableName)) {
             return response()->json(["error" => "Table '{$tableName}' does not exist."], 400);
         }
 
-        \DB::table($tableName)->insert($data);
-
-        return response()->json(['message' => 'Data inserted successfully']);
+        try {
+            DB::table($tableName)->insert($data);
+            return response()->json(['message' => 'Data inserted successfully']);
+        } catch (\Exception $e) {
+            Log::error("Error inserting data: {$e->getMessage()}", ['exception' => $e]);
+            return response()->json(['error' => 'Failed to insert data'], 500);
+        }
     }
 
     public function validateDynamicData(Form $form, array $data)
@@ -191,10 +199,9 @@ class DynamicFormController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Validation failed: ' . implode(', ', $validator->errors()->all())], 400);
+            return response()->json(['error' => 'Validation failed', 'details' => $validator->errors()->all()], 422);
         }
 
-        // Convert validated array fields to JSON
-
+        return null;
     }
 }
