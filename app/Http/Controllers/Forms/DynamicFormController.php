@@ -23,7 +23,7 @@ class DynamicFormController extends Controller
 
             return response()->json(['message' => 'Form published successfully']);
         } catch (\Exception $e) {
-            \Log::error("Error publishing form: {$e->getMessage()}");
+            \Log::error("Error publishing form: {$e}");
 
             return response()->json(['error' => 'Failed to publish form'], 500);
         }
@@ -31,6 +31,7 @@ class DynamicFormController extends Controller
 
     public function generateDynamicMigration(Form $form)
     {
+
         $fields = $form->fields;
         $migrationName = 'create_'.$form->slug.'_table';
         $tableName = $form->slug;

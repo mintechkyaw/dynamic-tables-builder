@@ -8,15 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('osjdofjowjeoifjojeo', function (Blueprint $table) {
+        Schema::create('test_tables', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('khine1', ['yes', 'no'])->notNullable();
+            $table->enum('test_column', ['1', '2', '3'])->nullable();
+            $table->string('test_nae')->nullable();
+            $table->json('test_name')->nullable();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('osjdofjowjeoifjojeo');
+        Schema::dropIfExists('test_tables');
     }
 };
