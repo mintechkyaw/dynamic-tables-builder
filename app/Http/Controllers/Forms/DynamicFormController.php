@@ -23,7 +23,7 @@ class DynamicFormController extends Controller
 
             return response()->json(['message' => 'Form published successfully']);
         } catch (\Exception $e) {
-            \Log::error("Error publishing form: {$e}");
+
 
             return response()->json(['error' => 'Failed to publish form'], 500);
         }
@@ -37,7 +37,7 @@ class DynamicFormController extends Controller
         $tableName = $form->slug;
 
         if (empty($tableName)) {
-            throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
+            return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
         }
 
         $fieldDefinitions = $fields->map(function ($field) {
@@ -55,7 +55,7 @@ class DynamicFormController extends Controller
             if ($type === 'enum') {
                 $optionsArray = json_decode($field->options, true);
                 if (empty($optionsArray)) {
-                    throw new \Exception("Enum field '{$field->column_name}' must have non-empty options.");
+                    return response()->json(['error' => "Enum field '{$field->column_name}' must have non-empty options."], 400);
                 }
                 $options = implode("', '", $optionsArray);
                 $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
@@ -107,7 +107,7 @@ class DynamicFormController extends Controller
             if ($type === 'enum') {
                 $optionsArray = json_decode($field->options, true);
                 if (empty($optionsArray)) {
-                    throw new \Exception("Enum field '{$field->column_name}' must have non-empty options.");
+                    return response()->json(["error" => "Enum field '{$field->column_name}' must have non-empty options."], 400);
                 }
                 $options = implode("', '", $optionsArray);
                 $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
@@ -139,7 +139,7 @@ class DynamicFormController extends Controller
 
         $data = $request->all();
         $this->validateDynamicData($form, $data);
-        
+
         foreach ($form->fields as $field) {
             if ($field->data_type === 'json' && isset($data[$field->column_name])) {
                 $data[$field->column_name] = json_encode($data[$field->column_name]);
@@ -149,11 +149,11 @@ class DynamicFormController extends Controller
         $tableName = $form->slug;
 
         if (empty($tableName)) {
-            throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
+            return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
         }
 
         if (!\Schema::hasTable($tableName)) {
-            throw new \Exception("Table '{$tableName}' does not exist.");
+            return response()->json(["error" => "Table '{$tableName}' does not exist."], 400);
         }
 
         \DB::table($tableName)->insert($data);
@@ -191,7 +191,7 @@ class DynamicFormController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            throw new \Exception('Validation failed: ' . implode(', ', $validator->errors()->all()));
+            return response()->json(['error' => 'Validation failed: ' . implode(', ', $validator->errors()->all())], 400);
         }
 
         // Convert validated array fields to JSON
