@@ -174,11 +174,11 @@ class DynamicFormController extends Controller
                 'json' => [
                     'array',
                     function ($attribute, $value, $fail) use ($field) {
-                        $options = json_decode($field->options, true);
-                        if (!empty($options) && array_diff($value, $options)) {
-                            $fail("The {$attribute} contains invalid options.");
-                        }
-                    },
+                            $options = json_decode($field->options, true);
+                            if (!empty($options) && array_diff($value, $options)) {
+                                $fail("The {$attribute} contains invalid options.");
+                            }
+                        },
                 ],
                 'enum' => 'in:' . implode(',', json_decode($field->options, true)),
                 'date' => 'date',
@@ -195,7 +195,7 @@ class DynamicFormController extends Controller
         return Validator::make($data, $rules)->validate();
     }
 
-    public function destroyDynamicForm(Form $form)
+    public static function destroyDynamicForm(Form $form)
     {
         $tableName = $form->slug;
         $migrationName = 'create_' . $tableName . '_table';
@@ -208,14 +208,6 @@ class DynamicFormController extends Controller
             }
         }
 
-        // Drop the table if it exists
-        if (Schema::hasTable($tableName)) {
-            Schema::drop($tableName);
-        }
-
-        // Optionally, delete the form record itself
-        $form->delete();
-
-        return response()->json(['message' => 'Dynamic form and associated resources deleted successfully']);
+        Schema::dropIfExists($tableName);
     }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Forms;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\FormStoreRequest;
-use App\Http\Resources\FormResource;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\FormResource;
+use App\Http\Requests\FormStoreRequest;
 
 class FormController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -93,11 +94,12 @@ class FormController extends Controller
     public function destroy(Form $form)
     {
         try {
+            DynamicFormController::destroyDynamicForm($form);
             $form->delete();
-
             return response()->json([
                 'message' => 'Form Deleted Successfully!',
             ]);
+
         } catch (\Throwable $th) {
             \Log::error("Error in Deleting Form: {$th->getMessage()}", [
                 'exception' => $th,
