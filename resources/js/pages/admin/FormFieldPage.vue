@@ -17,16 +17,16 @@
                     <div v-if="['json', 'enum'].includes(selectedDataType)">
                         <div>
                             <h4>Options</h4>
-                            <h5 v-for="(option,index) in options" :key="index" class="mb-1">{{ option }}
-                                <v-btn @click="removeOption" size="x-small" color="warning">Remove</v-btn>
-                            </h5>
+                            <v-list v-for="(option,index) in options" :key="index" class="mb-1">
+                                <span>{{ option }}</span>
+                                <v-btn @click="removeOption" size="x-small" color="warning" icon="fa fa-trash" variant="plain"></v-btn>
+                            </v-list>
                         </div>
                         <v-text-field v-model="newOption" label="Add Option" outlined dense></v-text-field>
                         <v-btn @click="addOption" color="primary" class="mt-2" size="x-small">Add Option</v-btn>
                     </div>
                     <v-col>
-                        <v-switch v-model="required" hide-details inset></v-switch>
-                        <h4>Require: {{ required }}</h4>
+                        <v-switch v-model="required" color="primary" hide-details inset label="Required"></v-switch>
                     </v-col>
                     <v-btn @click="submitField" :loading="isLoading" append-icon="fa-solid fa-plus" size="small" color="info" class="mt-4">Submit</v-btn>
                 </v-card>
