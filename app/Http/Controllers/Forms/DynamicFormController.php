@@ -33,7 +33,7 @@ class DynamicFormController extends Controller
     {
 
         $fields = $form->fields;
-        $migrationName = 'create_'.$form->slug.'_table';
+        $migrationName = 'create_' . $form->slug . '_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
@@ -67,7 +67,7 @@ class DynamicFormController extends Controller
                 $columnDefinition .= '->nullable()';
             }
 
-            return $columnDefinition.';';
+            return $columnDefinition . ';';
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -94,7 +94,7 @@ class DynamicFormController extends Controller
         };
         EOT;
 
-        $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
+        $filePath = database_path('migrations/' . now()->format('Y_m_d_His') . "_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
     }
 
@@ -115,7 +115,7 @@ class DynamicFormController extends Controller
 
             $columnDefinition .= $field->required ? '->notNullable()' : '->nullable()';
 
-            return $columnDefinition.';';
+            return $columnDefinition . ';';
         })->implode("\n            ");
     }
 
@@ -139,6 +139,12 @@ class DynamicFormController extends Controller
 
         $data = $request->all();
         $this->validateDynamicData($form, $data);
+        
+        foreach ($form->fields as $field) {
+            if ($field->data_type === 'json' && isset($data[$field->column_name])) {
+                $data[$field->column_name] = json_encode($data[$field->column_name]);
+            }
+        }
 
         $tableName = $form->slug;
 
@@ -146,7 +152,7 @@ class DynamicFormController extends Controller
             throw new \Exception('Table name cannot be empty. Please ensure the form has a valid slug.');
         }
 
-        if (! \Schema::hasTable($tableName)) {
+        if (!\Schema::hasTable($tableName)) {
             throw new \Exception("Table '{$tableName}' does not exist.");
         }
 
@@ -161,14 +167,22 @@ class DynamicFormController extends Controller
             $rule = match ($field->data_type) {
                 'string' => 'string',
                 'number' => 'numeric',
-                'json' => 'json',
-                'enum' => 'in:'.implode(',', json_decode($field->options, true)),
+                'json' => [
+                    'array',
+                    function ($attribute, $value, $fail) use ($field) {
+                        $options = json_decode($field->options, true);
+                        if (!empty($options) && array_diff($value, $options)) {
+                            $fail("The {$attribute} contains invalid options.");
+                        }
+                    },
+                ],
+                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
                 'date' => 'date',
                 default => 'string',
             };
 
             if ($field->required) {
-                $rule .= '|required';
+                $rule = is_array($rule) ? array_merge($rule, ['required']) : $rule . '|required';
             }
 
             return [$field->column_name => $rule];
@@ -177,7 +191,10 @@ class DynamicFormController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            throw new \Exception('Validation failed: '.implode(', ', $validator->errors()->all()));
+            throw new \Exception('Validation failed: ' . implode(', ', $validator->errors()->all()));
         }
+
+        // Convert validated array fields to JSON
+
     }
 }
