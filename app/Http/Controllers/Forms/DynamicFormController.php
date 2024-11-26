@@ -137,9 +137,9 @@ class DynamicFormController extends Controller
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
         }
- 
+
         $data = $this->validateDynamicData($form, $request->all());
-       
+
         foreach ($form->fields as $field) {
             if ($field->data_type === 'json' && isset($data[$field->column_name])) {
                 $data[$field->column_name] = json_encode($data[$field->column_name]);
@@ -193,5 +193,29 @@ class DynamicFormController extends Controller
         })->toArray();
 
         return Validator::make($data, $rules)->validate();
+    }
+
+    public function destroyDynamicForm(Form $form)
+    {
+        $tableName = $form->slug;
+        $migrationName = 'create_' . $tableName . '_table';
+
+        // Find and delete the migration file
+        $migrationFiles = glob(database_path('migrations/*_' . $migrationName . '.php'));
+        foreach ($migrationFiles as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+        // Drop the table if it exists
+        if (Schema::hasTable($tableName)) {
+            Schema::drop($tableName);
+        }
+
+        // Optionally, delete the form record itself
+        $form->delete();
+
+        return response()->json(['message' => 'Dynamic form and associated resources deleted successfully']);
     }
 }
