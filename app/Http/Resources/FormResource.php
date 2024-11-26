@@ -21,7 +21,6 @@ class FormResource extends JsonResource
             'status' => $this->status,
             'form_fields' => FormFieldResource::collection($this->fields->sort()),
 
-
         ];
     }
 }

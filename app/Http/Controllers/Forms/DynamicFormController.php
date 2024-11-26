@@ -137,13 +137,9 @@ class DynamicFormController extends Controller
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
         }
-
-        $data = $request->all();
-        $validationResponse = $this->validateDynamicData($form, $data);
-        if ($validationResponse) {
-            return $validationResponse;
-        }
-
+ 
+        $data = $this->validateDynamicData($form, $request->all());
+       
         foreach ($form->fields as $field) {
             if ($field->data_type === 'json' && isset($data[$field->column_name])) {
                 $data[$field->column_name] = json_encode($data[$field->column_name]);
@@ -196,12 +192,6 @@ class DynamicFormController extends Controller
             return [$field->column_name => $rule];
         })->toArray();
 
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Validation failed', 'details' => $validator->errors()->all()], 422);
-        }
-
-        return null;
+        return Validator::make($data, $rules)->validate();
     }
 }

@@ -51,7 +51,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#fdba74\" \"php artisan serve\" \"npm run dev\""
+            "npx concurrently  \"php artisan serve\" \"npm run dev\""
         ]
     },
     "extra": {
