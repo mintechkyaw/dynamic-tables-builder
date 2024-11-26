@@ -16,16 +16,27 @@ class FormFieldFactory extends Factory
      */
     public function definition(): array
     {
+        $typeMapping = [
+            'string' => 'text',
+            'integer' => 'number',
+            'json' => 'check_box',
+            'enum' => 'radio',
+            'date' => 'calendar',
+        ];
+
+        $dataType = $this->faker->randomElement(array_keys($typeMapping));
+        $type = $typeMapping[$dataType];
+
+        $options = in_array($type, ['check_box', 'radio'])
+            ? json_encode($this->faker->words(3))
+            : null;
+
         return [
             'form_id' => \App\Models\Form::factory(),
             'column_name' => $this->faker->unique()->word(),
-            'data_type' => $this->faker->randomElement(['string', 'integer', 'json', 'enum', 'date']),
-            'type' => $this->faker->randomElement(['text', 'number', 'check_box', 'radio', 'calendar']),
-            'options' => $this->faker->randomElement([
-                json_encode(['option1', 'option2', 'option3']),
-                json_encode(['yes', 'no']),
-                json_encode([]),
-            ]),
+            'data_type' => $dataType,
+            'type' => $type,
+            'options' => $options,
             'required' => $this->faker->boolean(),
         ];
     }

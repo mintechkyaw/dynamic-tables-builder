@@ -3,7 +3,7 @@ import api from "../../api/axios";
 export default {
     state: {
         forms: [],
-        form: [],
+        form: {},
     },
     getters: {
         getForms(state) {
@@ -19,6 +19,9 @@ export default {
         },
         setForm(state, form) {
             state.form = form;
+        },
+        updateForms(state, newForm) {
+            state.forms.push(newForm);
         },
     },
     actions: {
@@ -36,7 +39,8 @@ export default {
                     name: form.formName,
                     slug: form.slug,
                 });
-                console.log(data);
+                // console.log(data);
+                commit("updateForms", data.form);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }
@@ -46,6 +50,46 @@ export default {
                 const { data } = await api.get(`/forms/${id}`);
                 commit("setForm", data.data);
             } catch (e) {
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async submitFormField({ commit }, fieldData) {
+            try {
+                const res = await api.post(`/form_fields`, fieldData);
+                // console.log(res);
+                alert(res.data.message);
+            } catch (e) {
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async deleteField({ commit }, id) {
+            try {
+                const res = await api.delete(`/form_fields/${id}`);
+                // console.log(res);
+                alert(res.data.message);
+            } catch (e) {
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async submitFormToDatabase({ commit }, id) {
+            try {
+                const res = await api.post(`/forms/${id}/publish`);
+                // console.log(form);
+                console.log(res);
+            } catch (e) {
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async deleteForm({ commit }, id) {
+            try {
+                const res = await api.delete(`/forms/${id}`);
+                console.log(res);
+                alert(res.data.message);
+            } catch (error) {
+                alert(e.response?.data?.message);
                 throw new Error(e.response?.data?.message);
             }
         },

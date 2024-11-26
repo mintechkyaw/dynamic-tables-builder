@@ -15,7 +15,7 @@ class FormController extends Controller
      */
     public function index(Request $request)
     {
-        $request->validate(['status' => 'sometimes|string|in:drafted,published']);
+        $request->validate(['status' => 'nullable|string|in:drafted,published']);
         if ($request->status === 'drafted') {
             $forms = Form::where('status', 'drafted')->get();
         } elseif ($request->status === 'published') {
@@ -34,11 +34,12 @@ class FormController extends Controller
     {
         $data = $request->validated();
         try {
+            $data['status'] = 'drafted';
             $form = auth()->user()->forms()->create($data);
 
             return response()->json(
                 [
-                    'msg' => 'Form Created Successfully!',
+                    'message' => 'Form Created Successfully!',
                     'form' => new FormResource($form),
                 ],
                 201
@@ -73,7 +74,7 @@ class FormController extends Controller
             $form->update($data);
 
             return response()->json([
-                'msg' => 'Form Name Updated Successfully!',
+                'message' => 'Form Name Updated Successfully!',
             ], 200);
         } catch (\Throwable $th) {
             \Log::error("Error in Updating Form: {$th->getMessage()}", [
@@ -95,7 +96,7 @@ class FormController extends Controller
             $form->delete();
 
             return response()->json([
-                'msg' => 'Form Deleted Successfully!',
+                'message' => 'Form Deleted Successfully!',
             ]);
         } catch (\Throwable $th) {
             \Log::error("Error in Deleting Form: {$th->getMessage()}", [
