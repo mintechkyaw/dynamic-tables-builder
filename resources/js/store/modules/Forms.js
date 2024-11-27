@@ -93,5 +93,16 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
+        async submituserForm({commit},formData){
+           try {
+            const res = await api.post(`/forms/${formData.id}/submit`,formData)
+            console.log(res);
+           } catch (error) {
+            alert(e.response?.data?.message);
+            throw new Error(e.response?.data?.message);
+
+           }
+
+        }
     },
 };
