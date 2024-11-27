@@ -210,4 +210,25 @@ class DynamicFormController extends Controller
 
         Schema::dropIfExists($tableName);
     }
+
+    public function getDataFromDynamicTable(Form $form)
+    {
+        $tableName = $form->slug;
+
+        if (empty($tableName)) {
+            return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
+        }
+
+        if (!Schema::hasTable($tableName)) {
+            return response()->json(["error" => "Table '{$tableName}' does not exist."], 400);
+        }
+
+        try {
+            $data = DB::table($tableName)->get();
+            return response()->json(['data' => $data], 200);
+        } catch (\Exception $e) {
+            Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
+            return response()->json(['error' => 'Failed to retrieve data'], 500);
+        }
+    }
 }

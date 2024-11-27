@@ -24,6 +24,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'authUserInfo']);
+    Route::get('/forms/{form}/data', [DynamicFormController::class, 'getDataFromDynamicTable']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('forms', FormController::class);
