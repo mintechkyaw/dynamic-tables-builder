@@ -3,7 +3,7 @@
         <v-container class="mt-3">
             <h3 class="my-2">Forms Lists</h3>
             <v-data-table-server
-                :items="getResponseForms?.data"
+                :items="transformedData"
                 :items-length="totalItems"
                 :loading="loading"
             >
@@ -25,6 +25,17 @@ export default {
     },
     computed: {
         ...mapGetters(["getResponseForms"]),
+        transformedData() {
+            return this.getResponseForms?.data.map(item => {
+                const transformedItem = { ...item };
+                for (const key in transformedItem) {
+                    if (Array.isArray(transformedItem[key])) {
+                        transformedItem[key] = transformedItem[key].join(', ');
+                    }
+                }
+                return transformedItem;
+            });
+        }
     },
     watch: {
         getResponseForms(forms) {
