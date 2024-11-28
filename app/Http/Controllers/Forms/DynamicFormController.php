@@ -229,10 +229,18 @@ class DynamicFormController extends Controller
 
         try {
             $headers = $form->fields->pluck('column_name');
-            $data = DB::table($tableName)->get();
+            $data = DB::table($tableName)->get()->map(function ($item) use ($form) {
+                foreach ($form->fields as $field) {
+                    if ($field->data_type === 'json' && isset($item->{$field->column_name})) {
+                        $item->{$field->column_name} = json_decode($item->{$field->column_name}, true);
+                    }
+                }
+                return $item;
+            });
             return response()->json([
                 'headers' => $headers,
-                'data' => $data], 200);
+                'data' => $data
+            ], 200);
         } catch (\Exception $e) {
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
             return response()->json(['error' => 'Failed to retrieve data'], 500);
