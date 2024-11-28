@@ -1,10 +1,11 @@
 <template>
   <v-container>
-    <router-link to="/tables">
+    <router-link to="/tables" class="my-2">
       <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small"
         >Back</v-btn
       >
     </router-link>
+    <v-alert class="my-3" v-if="successAlert" closable :text="successMessage" color="info" icon="$success"></v-alert>
     <v-skeleton-loader
       v-if="isLoading"
       type="list-item-two-line"
@@ -111,6 +112,8 @@ export default {
       datePickerVisible: false,
       isLoading: false,
       btnloading: false,
+      successMessage : '',
+      successAlert : false,
       formData: {},
       id: null,
       fields: [],
@@ -163,6 +166,8 @@ export default {
           status: this.getForm?.status,
           slug: this.getForm?.slug,
         });
+        this.successAlert = true;
+        this.successMessage = "Data inserted successfully";
       } catch (error) {
         console.error("Error submitting the form:", error);
       } finally {
