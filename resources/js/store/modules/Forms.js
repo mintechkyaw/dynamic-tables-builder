@@ -44,8 +44,6 @@ export default {
             try {
                 const { data } = await api.get(`/forms/${id}/data`);
                 commit("responseForms", data);
-                console.log(data);
-
             } catch (error) {
 
             }
@@ -103,7 +101,6 @@ export default {
         async deleteForm({ commit }, id) {
             try {
                 const res = await api.delete(`/forms/${id}`);
-                console.log(res);
                 alert(res.data.message);
             } catch (error) {
                 alert(e.response?.data?.message);
