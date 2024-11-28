@@ -159,6 +159,8 @@ class DynamicFormController extends Controller
         }
 
         try {
+            $data['created_at'] = now();
+            $data['updated_at'] = now();
             DB::table($tableName)->insert($data);
             return response()->json(['message' => 'Data inserted successfully']);
         } catch (\Exception $e) {
