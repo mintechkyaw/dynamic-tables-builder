@@ -78,9 +78,6 @@
             class="w-full"
           ></v-text-field>
         </div>
-        <!-- <div>
-                    <input type="hidden" v-model="formData[getForm.id]">
-                </div> -->
       </div>
 
       <v-btn @click="onSubmit"
@@ -99,6 +96,7 @@
           indeterminate
         ></v-progress-circular>
       </v-btn>
+      <v-btn color="primary" class="ms-2" @click="responseTableLists(this.$route.params.id)">view</v-btn>
     </v-form>
   </v-container>
 </template>
@@ -172,6 +170,14 @@ export default {
         this.formData = {}
       }
     },
+    responseTableLists(id) {
+        console.log(id);
+
+            this.$router.push({
+                name: "ResponseTableLists",
+                params: { id: id },
+            });
+        },
   },
   mounted() {
     this.isLoading = true;

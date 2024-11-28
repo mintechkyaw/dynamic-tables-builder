@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FormFieldResource;
 use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
@@ -224,8 +225,11 @@ class DynamicFormController extends Controller
         }
 
         try {
+            $headers = $form->fields->pluck('column_name');
             $data = DB::table($tableName)->get();
-            return response()->json(['data' => $data], 200);
+            return response()->json([
+                'headers' => $headers,
+                'data' => $data], 200);
         } catch (\Exception $e) {
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
             return response()->json(['error' => 'Failed to retrieve data'], 500);

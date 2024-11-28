@@ -4,6 +4,7 @@ export default {
     state: {
         forms: [],
         form: {},
+        responseForms : null,
     },
     getters: {
         getForms(state) {
@@ -12,6 +13,9 @@ export default {
         getForm(state) {
             return state.form;
         },
+        getResponseForms(state) {
+            return state.responseForms;
+        }
     },
     mutations: {
         setForms(state, forms) {
@@ -23,6 +27,9 @@ export default {
         updateForms(state, newForm) {
             state.forms.push(newForm);
         },
+        responseForms(state, responseForms) {
+            state.responseForms = responseForms;
+        }
     },
     actions: {
         async fetchForms({ commit }) {
@@ -31,6 +38,16 @@ export default {
                 commit("setForms", data.data);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
+            }
+        },
+        async fetchResponseTables({commit}, id) {
+            try {
+                const { data } = await api.get(`/forms/${id}/data`);
+                commit("responseForms", data);
+                console.log(data);
+
+            } catch (error) {
+
             }
         },
         async createForm({ commit }, form) {
@@ -96,7 +113,6 @@ export default {
         async submituserForm({commit},formData){
            try {
             const res = await api.post(`/forms/${formData.id}/submit`,formData)
-            console.log(res);
            } catch (error) {
             alert(e.response?.data?.message);
             throw new Error(e.response?.data?.message);
