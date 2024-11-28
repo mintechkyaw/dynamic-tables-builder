@@ -215,7 +215,7 @@ class DynamicFormController extends Controller
         Schema::dropIfExists($tableName);
     }
 
-    public function getDataFromDynamicTable(Form $form)
+    public function getDataFromDynamicTable(Form $form, Request $request)
     {
         $tableName = $form->slug;
 
@@ -228,8 +228,9 @@ class DynamicFormController extends Controller
         }
 
         try {
+            $perPage = $request->input('per_page', 10); // Default to 10 if not provided
             $headers = $form->fields->pluck('column_name');
-            $data = DB::table($tableName)->get()->map(function ($item) use ($form) {
+            $data = DB::table($tableName)->paginate($perPage)->map(function ($item) use ($form) {
                 foreach ($form->fields as $field) {
                     if ($field->data_type === 'json' && isset($item->{$field->column_name})) {
                         $item->{$field->column_name} = json_decode($item->{$field->column_name}, true);
@@ -237,10 +238,20 @@ class DynamicFormController extends Controller
                 }
                 return $item;
             });
+
             return response()->json([
                 'headers' => $headers,
-                'data' => $data
+                'data' => $data->items(),
+                'pagination' => [
+                    'total' => $data->total(),
+                    'per_page' => $data->perPage(),
+                    'current_page' => $data->currentPage(),
+                    'last_page' => $data->lastPage(),
+                    'from' => $data->firstItem(),
+                    'to' => $data->lastItem(),
+                ],
             ], 200);
+
         } catch (\Exception $e) {
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
             return response()->json(['error' => 'Failed to retrieve data'], 500);
