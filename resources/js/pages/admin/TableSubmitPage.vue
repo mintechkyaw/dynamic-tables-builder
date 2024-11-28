@@ -1,11 +1,14 @@
 <template>
-  <v-container>
-    <router-link to="/tables" class="my-2">
+  <v-container class="mx-auto"
+      color="secondary"
+      height="200"
+      max-width="700">
+    <!-- <router-link to="/tables" class="my-2">
       <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small"
         >Back</v-btn
       >
-    </router-link>
-    <v-alert class="my-3" v-if="successAlert" closable :text="successMessage" color="info" icon="$success"></v-alert>
+    </router-link> -->
+    <v-alert v-if="successAlert" closable :text="successMessage" color="info" icon="$success"></v-alert>
     <v-skeleton-loader
       v-if="isLoading"
       type="list-item-two-line"
@@ -13,7 +16,7 @@
 
     <v-list-item v-else lines="two" rounded></v-list-item>
     <v-form v-model="valid" v-if="!isLoading">
-      <h4 class="my-2">{{ getForm?.name }}</h4>
+      <h4 class="mb-1">{{ getForm?.name }}</h4>
       <div v-for="field in fields" :key="field.id" cols="12" md="6">
         <div v-if="field.type === 'text'">
           <v-text-field
@@ -80,24 +83,36 @@
           ></v-text-field>
         </div>
       </div>
-
-      <v-btn @click="onSubmit"
-      variant="outlined"
-
-        ><span
-          :loading="btnloading"
-          :disabled="btnloading"
-          v-if="!btnloading"
-          >Save</span
-        >
-        <v-progress-circular
+      <v-row class="d-flex align-center">
+  <!-- Save Button -->
+  <v-btn
+    @click="onSubmit"
+    variant="outlined"
+    :disabled="btnloading"
+    color="primary"
+    class="ms-3 my-2"
+    :loading="btnloading"
+  >
+    <template v-if="!btnloading">Save</template>
+    <template v-if="btnloading">
+      <v-progress-circular
         class="mx-1"
-          v-if="btnloading"
-          color="primary"
-          indeterminate
-        ></v-progress-circular>
-      </v-btn>
-      <v-btn color="primary" class="ms-2" @click="responseTableLists(this.$route.params.id)">view</v-btn>
+        color="primary"
+        indeterminate
+        size="24"
+      ></v-progress-circular>
+    </template>
+  </v-btn>
+
+  <!-- View Button -->
+  <v-btn
+    color="primary"
+    class="ms-2"
+    @click="responseTableLists(this.$route.params.id)"
+  >
+    View
+  </v-btn>
+</v-row>
     </v-form>
   </v-container>
 </template>
