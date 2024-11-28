@@ -33,19 +33,21 @@ export default {
     computed: {
         ...mapGetters(["getResponseForms"]),
         transformedData() {
-            return this.getResponseForms?.data.map((item) => {
+            return this.getResponseForms?.data.map(item => {
                 const transformedItem = { ...item };
                 for (const key in transformedItem) {
                     if (Array.isArray(transformedItem[key])) {
-                        transformedItem[key] = transformedItem[key].join(", ");
+                        transformedItem[key] = transformedItem[key].join(', ');
                     }
                 }
                 return transformedItem;
             });
-        },
+        }
     },
     watch: {
         getResponseForms(forms) {
+            console.log(forms);
+
             this.totalItems = forms.data?.length;
             // if (forms?.headers?.length) {
             //     this.headers = forms.headers.map((key) => ({
