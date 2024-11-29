@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class DynamicFormController extends Controller
 {
@@ -27,6 +27,7 @@ class DynamicFormController extends Controller
             return response()->json(['message' => 'Form published successfully']);
         } catch (\Exception $e) {
             Log::error("Error publishing form: {$e->getMessage()}", ['exception' => $e]);
+
             return response()->json(['error' => 'Failed to publish form'], 500);
         }
     }
@@ -34,7 +35,7 @@ class DynamicFormController extends Controller
     public function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
-        $migrationName = 'create_' . $form->slug . '_table';
+        $migrationName = 'create_'.$form->slug.'_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
@@ -68,7 +69,7 @@ class DynamicFormController extends Controller
                 $columnDefinition .= '->nullable()';
             }
 
-            return $columnDefinition . ';';
+            return $columnDefinition.';';
         })->implode("\n            ");
 
         $migrationContent = <<<EOT
@@ -96,7 +97,7 @@ class DynamicFormController extends Controller
         };
         EOT;
 
-        $filePath = database_path('migrations/' . now()->format('Y_m_d_His') . "_{$migrationName}.php");
+        $filePath = database_path('migrations/'.now()->format('Y_m_d_His')."_{$migrationName}.php");
         file_put_contents($filePath, $migrationContent);
     }
 
@@ -109,7 +110,7 @@ class DynamicFormController extends Controller
             if ($type === 'enum') {
                 $optionsArray = json_decode($field->options, true);
                 if (empty($optionsArray)) {
-                    return response()->json(["error" => "Enum field '{$field->column_name}' must have non-empty options."], 400);
+                    return response()->json(['error' => "Enum field '{$field->column_name}' must have non-empty options."], 400);
                 }
                 $options = implode("', '", $optionsArray);
                 $columnDefinition = "\$table->{$type}('{$field->column_name}', ['{$options}'])";
@@ -117,7 +118,7 @@ class DynamicFormController extends Controller
 
             $columnDefinition .= $field->required ? '->notNullable()' : '->nullable()';
 
-            return $columnDefinition . ';';
+            return $columnDefinition.';';
         })->implode("\n            ");
     }
 
@@ -153,17 +154,19 @@ class DynamicFormController extends Controller
             return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
         }
 
-        if (!Schema::hasTable($tableName)) {
-            return response()->json(["error" => "Table '{$tableName}' does not exist."], 400);
+        if (! Schema::hasTable($tableName)) {
+            return response()->json(['error' => "Table '{$tableName}' does not exist."], 400);
         }
 
         try {
             $data['created_at'] = now();
             $data['updated_at'] = now();
             DB::table($tableName)->insert($data);
+
             return response()->json(['message' => 'Data inserted successfully']);
         } catch (\Exception $e) {
             Log::error("Error inserting data: {$e->getMessage()}", ['exception' => $e]);
+
             return response()->json(['error' => 'Failed to insert data'], 500);
         }
     }
@@ -177,19 +180,19 @@ class DynamicFormController extends Controller
                 'json' => [
                     'array',
                     function ($attribute, $value, $fail) use ($field) {
-                            $options = json_decode($field->options, true);
-                            if (!empty($options) && array_diff($value, $options)) {
-                                $fail("The {$attribute} contains invalid options.");
-                            }
-                        },
+                        $options = json_decode($field->options, true);
+                        if (! empty($options) && array_diff($value, $options)) {
+                            $fail("The {$attribute} contains invalid options.");
+                        }
+                    },
                 ],
-                'enum' => 'in:' . implode(',', json_decode($field->options, true)),
+                'enum' => 'in:'.implode(',', json_decode($field->options, true)),
                 'date' => 'date',
                 default => 'string',
             };
 
             if ($field->required) {
-                $rule = is_array($rule) ? array_merge($rule, ['required']) : $rule . '|required';
+                $rule = is_array($rule) ? array_merge($rule, ['required']) : $rule.'|required';
             }
 
             return [$field->column_name => $rule];
@@ -201,10 +204,10 @@ class DynamicFormController extends Controller
     public static function destroyDynamicForm(Form $form)
     {
         $tableName = $form->slug;
-        $migrationName = 'create_' . $tableName . '_table';
+        $migrationName = 'create_'.$tableName.'_table';
 
         // Find and delete the migration file
-        $migrationFiles = glob(database_path('migrations/*_' . $migrationName . '.php'));
+        $migrationFiles = glob(database_path('migrations/*_'.$migrationName.'.php'));
         foreach ($migrationFiles as $file) {
             if (file_exists($file)) {
                 unlink($file);
@@ -222,8 +225,8 @@ class DynamicFormController extends Controller
             return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
         }
 
-        if (!Schema::hasTable($tableName)) {
-            return response()->json(["error" => "Table '{$tableName}' does not exist."], 400);
+        if (! Schema::hasTable($tableName)) {
+            return response()->json(['error' => "Table '{$tableName}' does not exist."], 400);
         }
 
         try {
@@ -247,6 +250,7 @@ class DynamicFormController extends Controller
                         $item->{$field->column_name} = json_decode($item->{$field->column_name}, true);
                     }
                 }
+
                 return $item;
             });
 
@@ -264,6 +268,7 @@ class DynamicFormController extends Controller
             ], 200);
         } catch (\Exception $e) {
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
+
             return response()->json(['error' => 'Failed to retrieve data'], 500);
         }
     }
