@@ -44,7 +44,7 @@
                         <router-link :to="`/form_field/${form.id}`">
                             <v-btn v-if="form.status =='drafted'" size="x-small" color="info" class="me-1">Add Fields</v-btn>
                         </router-link>
-                        <v-dialog v-if="form.status =='drafted'" max-width="500">
+                        <v-dialog v-model="dialog" v-if="form.status =='drafted'" max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
                                 <v-btn @click="editFormBtn(form.id)" v-bind="activatorProps" color="surface-variant" size="x-small" class="me-1" text="Edit" variant="flat"></v-btn>
                             </template>
@@ -91,8 +91,9 @@ export default {
         isLoading: false,
         delBtnLoading: false,
         loadingStates: {},
-        isActive: {
-            value: true,
+        dialog :false,
+        isActive:{
+            value : false,
         }
     }),
     computed: {
@@ -130,6 +131,7 @@ export default {
                 this.editFormBtnLoading = true;
                 await this.fetchFormById(id);
                 this.editForm = this.getForm;
+                this.dialog = true;
             } catch (e) {
                 this.editFormBtnLoading = false;
                 alert(e.message);
@@ -140,7 +142,7 @@ export default {
                 this.updateFormBtnLoading = true;
                 await this.updateForm(form);
                 // this.updateFormBtnLoading = false;
-                this.isActive.value = false;
+                this.dialog = false;
                 this.fetchForms();
             } catch (e) {
                 this.updateFormBtnLoading = false;
@@ -148,6 +150,9 @@ export default {
             } finally {
                 this.updateFormBtnLoading = false;
             }
+        },
+        closeDialog(){
+            isActive.value = false;
         }
     },
     mounted() {
