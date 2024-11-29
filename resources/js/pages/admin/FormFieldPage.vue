@@ -4,16 +4,15 @@
         <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small">Back</v-btn>
     </router-link>
     <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
             <div class="mb-2">
                 <h1>Form Name: {{ getForm.name }}</h1>
                 <p>Status: <span class="text-red-lighten-1 mb-5">{{ getForm.status }}</span></p>
             </div>
             <div>
-                <v-card width="400" style="padding: 10px">
+                <v-card style="padding: 1rem">
                     <v-text-field v-model="name" label="Field Name" outlined dense required></v-text-field>
                     <v-select v-model="selectedDataType" :items="fieldDataType" label="Select Data Type" outlined dense required></v-select>
-                    <!-- <p class="mt-3">Selected Data Type: {{ selectedDataType }}</p> -->
                     <div v-if="['json', 'enum'].includes(selectedDataType)">
                         <div>
                             <h4>Options</h4>
@@ -32,7 +31,7 @@
                 </v-card>
             </div>
         </v-col>
-        <v-col cols="8">
+        <v-col cols="12" md="8">
             <div class="mb-2">
                 <h1>Field Lists</h1>
                 <p>Status: <span class="text-red-lighten-1 mb-5">{{ getForm.status }} {{ getForm.user_id }}</span></p>
