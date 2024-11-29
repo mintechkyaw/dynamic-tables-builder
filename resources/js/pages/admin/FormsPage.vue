@@ -44,8 +44,24 @@
                         <router-link :to="`/form_field/${form.id}`">
                             <v-btn v-if="form.status =='drafted'" size="x-small" color="info" class="me-1">Add Fields</v-btn>
                         </router-link>
-                        <v-btn @click="delBtn(form.id)" :loading="loadingStates[form.id]"
-                        :disabled="loadingStates[form.id]"  size="x-small" color="error">Delete</v-btn>
+                        <v-dialog v-model="dialog" v-if="form.status =='drafted'" max-width="500">
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-btn @click="editFormBtn(form.id)" v-bind="activatorProps" color="surface-variant" size="x-small" class="me-1" text="Edit" variant="flat"></v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                                <v-card title="Edit">
+                                    <v-text-field v-model="getForm.name" label="Form"></v-text-field>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+
+                                        <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                                        <v-btn text="Update" @click="updateFormBtn(getForm)" :loading="updateFormBtnLoading"></v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </template>
+                        </v-dialog>
+                        <v-btn @click="delBtn(form.id)" :loading="loadingStates[form.id]" :disabled="loadingStates[form.id]" size="x-small" color="error">Delete</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -69,16 +85,22 @@ export default {
             formName: '',
             slug: '',
         },
+        editForm: "",
+        updateFormBtnLoading: false,
         errorMessage: "",
         isLoading: false,
         delBtnLoading: false,
         loadingStates: {},
+        dialog :false,
+        isActive:{
+            value : false,
+        }
     }),
     computed: {
         ...mapGetters(["getForms", "getForm"]),
     },
     methods: {
-        ...mapActions(["fetchForms", "createForm", "fetchFormById", "deleteForm"]),
+        ...mapActions(["fetchForms", "createForm", "fetchFormById", "deleteForm", "updateForm"]),
         async submitBtn() {
             try {
                 this.isLoading = true;
@@ -103,6 +125,34 @@ export default {
                 this.loadingStates[id] = true;
                 alert(error.message);
             }
+        },
+        async editFormBtn(id) {
+            try {
+                this.editFormBtnLoading = true;
+                await this.fetchFormById(id);
+                this.editForm = this.getForm;
+                this.dialog = true;
+            } catch (e) {
+                this.editFormBtnLoading = false;
+                alert(e.message);
+            }
+        },
+        async updateFormBtn(form) {
+            try {
+                this.updateFormBtnLoading = true;
+                await this.updateForm(form);
+                // this.updateFormBtnLoading = false;
+                this.dialog = false;
+                this.fetchForms();
+            } catch (e) {
+                this.updateFormBtnLoading = false;
+                console.log(e.message);
+            } finally {
+                this.updateFormBtnLoading = false;
+            }
+        },
+        closeDialog(){
+            isActive.value = false;
         }
     },
     mounted() {
