@@ -176,6 +176,7 @@ export default {
         });
         this.successAlert = true;
         this.successMessage = "Data inserted successfully";
+        alert(this.successMessage);
       } catch (error) {
         console.error("Error submitting the form:", error);
       } finally {
@@ -183,7 +184,7 @@ export default {
         this.formData = {}
       }
     },
-    
+
   },
   mounted() {
     this.isLoading = true;

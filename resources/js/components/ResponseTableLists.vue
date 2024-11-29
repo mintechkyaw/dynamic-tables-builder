@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-container class="mt-3">
-            <router-link :to="'/tables/' + id" class="my-2">
+            <router-link to="/tables" class="my-2">
                 <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small"
                     >Back</v-btn
                 >
@@ -27,7 +27,6 @@ export default {
         return {
             totalItems: 0,
             loading: false,
-            id : this.$route.params.id,
         };
     },
     computed: {

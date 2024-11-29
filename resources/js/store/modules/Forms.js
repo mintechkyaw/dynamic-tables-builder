@@ -40,7 +40,12 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async fetchResponseTables({ commit }, id) {
+        async fetchResponseTables({ commit }, data) {
+            console.log(data);
+            const id = data.id;
+            const per_page = data.per_page;
+            const page = data.page;
+
             try {
                 const { data } = await api.get(`/forms/${id}/data?per_page=${per_page}&page=${page}`);
                 console.log(data);

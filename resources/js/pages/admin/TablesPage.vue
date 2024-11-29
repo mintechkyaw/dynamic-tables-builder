@@ -16,13 +16,13 @@
                         <td>{{ item.name }}</td>
                         <td class="text-success">{{ item.status }}</td>
                         <td>
-                            <v-btn @click="SubmitTable(item.id)"
+                            <v-btn @click="responseTableLists(item.id)"
                                 ><i class="fa-solid fa-eye"></i
                             ></v-btn>
                             <v-btn
                                 class="ms-2"
                                 @click="
-                                    responseTableLists(this.$route.params.id)
+                                   SubmitTable(item.id)
                                 "
                             >
                                 <i class="fa-solid fa-file-circle-plus"></i>
