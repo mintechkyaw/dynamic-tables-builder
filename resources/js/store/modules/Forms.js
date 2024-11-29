@@ -15,7 +15,7 @@ export default {
         },
         getResponseForms(state) {
             return state.responseForms;
-        }
+        },
     },
     mutations: {
         setForms(state, forms) {
@@ -29,7 +29,7 @@ export default {
         },
         responseForms(state, responseForms) {
             state.responseForms = responseForms;
-        }
+        },
     },
     actions: {
         async fetchForms({ commit }) {
@@ -40,19 +40,13 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async fetchResponseTables({ commit }, data) {
-            const id = data.id;
-            let per_page = data.per_page;
-            let page = data.page;
-
+        async fetchResponseTables({ commit }, id) {
             try {
                 const { data } = await api.get(`/forms/${id}/data?per_page=${per_page}&page=${page}`);
                 console.log(data);
 
                 commit("responseForms", data);
-            } catch (error) {
-
-            }
+            } catch (error) {}
         },
         async createForm({ commit }, form) {
             try {
@@ -115,13 +109,22 @@ export default {
         },
         async submituserForm({ commit }, formData) {
             try {
-                const res = await api.post(`/forms/${formData.id}/submit`, formData)
+                const res = await api.post(
+                    `/forms/${formData.id}/submit`,
+                    formData
+                );
             } catch (error) {
                 alert(e.response?.data?.message);
                 throw new Error(e.response?.data?.message);
-
             }
-
-        }
+        },
+        async updateForm({ commit }, form) {
+            try {
+                const { data } = await api.put(`/forms/${form.id}`, form);
+                alert(data.message);
+            } catch (e) {
+                throw new Error(e.response?.data?.message);
+            }
+        },
     },
 };
