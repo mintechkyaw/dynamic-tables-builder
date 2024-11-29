@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Forms;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FormFieldResource;
 use App\Models\Form;
 use Artisan;
 use Illuminate\Http\Request;
@@ -230,7 +229,10 @@ class DynamicFormController extends Controller
         try {
             $perPage = $request->input('per_page', 10); // Default to 10 if not provided
             $headers = $form->fields->pluck('column_name');
-            $data = DB::table($tableName)->paginate($perPage)->map(function ($item) use ($form) {
+            $paginatedData = DB::table($tableName)->paginate($perPage);
+
+            $data = $paginatedData->items();
+            $data = collect($data)->map(function ($item) use ($form) {
                 foreach ($form->fields as $field) {
                     if ($field->data_type === 'json' && isset($item->{$field->column_name})) {
                         $item->{$field->column_name} = json_decode($item->{$field->column_name}, true);
@@ -241,17 +243,16 @@ class DynamicFormController extends Controller
 
             return response()->json([
                 'headers' => $headers,
-                'data' => $data->items(),
+                'data' => $data,
                 'pagination' => [
-                    'total' => $data->total(),
-                    'per_page' => $data->perPage(),
-                    'current_page' => $data->currentPage(),
-                    'last_page' => $data->lastPage(),
-                    'from' => $data->firstItem(),
-                    'to' => $data->lastItem(),
+                    'total' => $paginatedData->total(),
+                    'per_page' => $paginatedData->perPage(),
+                    'current_page' => $paginatedData->currentPage(),
+                    'last_page' => $paginatedData->lastPage(),
+                    'from' => $paginatedData->firstItem(),
+                    'to' => $paginatedData->lastItem(),
                 ],
             ], 200);
-
         } catch (\Exception $e) {
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
             return response()->json(['error' => 'Failed to retrieve data'], 500);
