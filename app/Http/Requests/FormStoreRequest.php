@@ -24,7 +24,7 @@ class FormStoreRequest extends FormRequest
         if (request()->isMethod('post')) {
             return [
                 'name' => 'required|string|max:255',
-                'slug' => 'required|string|max:255|unique:forms,slug',
+                'slug' => 'required|string|max:255|unique:forms,slug|not_in:users,password_reset_tokens,permission,',
             ];
         }
 

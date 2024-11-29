@@ -42,10 +42,14 @@ class FormFieldRequest extends FormRequest
 
         return [
             'form_id' => 'required|exists:forms,id',
-            'column_name' => 'required|string|max:255|'.
+            'column_name' => [
+                'required',
+                'string',
+                'max:255',
                 Rule::unique('form_fields')->where(function ($query) {
                     return $query->where('form_id', $this->form_id);
                 }),
+            ],
             'type' => 'required|string|in:text,number,check_box,radio,calendar',
             'options' => [
                 Rule::excludeIf($this->type !== 'check_box' && $this->type !== 'radio'),

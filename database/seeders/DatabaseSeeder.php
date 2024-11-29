@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::create(['name' => 'admin']);
-        // Role::create(['name' => 'user']);
-        // Role::create(['name' => 'editor']);
+        Role::create(['name' => 'user']);
+        Role::create(['name' => 'editor']);
 
-        // \App\Models\Form::factory()
-        //     ->has(\App\Models\FormField::factory()->count(10), 'fields')
-        //     ->count(5)
-        //     ->create();
+        \App\Models\Form::factory()
+            ->has(\App\Models\FormField::factory()->count(10), 'fields')
+            ->count(5)
+            ->create();
 
         $adminUser = User::create([
             'name' => 'Admin',

@@ -121,7 +121,8 @@ export default {
             this.options.splice(index, 1);
         },
         async submitField() {
-            if (!this.selectedDataType) {
+            try {
+                if (!this.selectedDataType) {
                 alert("Please select a data type.");
                 return;
             }
@@ -141,6 +142,10 @@ export default {
             this.clearField();
             const formId = this.$route.params.id;
             this.fetchFormById(formId);
+            } catch (e) {
+                this.isLoading = false;
+                console.log(e.message);
+            }
         },
         clearField() {
             this.name = "";
