@@ -105,13 +105,6 @@
   </v-btn>
 
   <!-- View Button -->
-  <v-btn
-    color="primary"
-    class="ms-2"
-    @click="responseTableLists(this.$route.params.id)"
-  >
-    View
-  </v-btn>
 </v-row>
     </v-form>
   </v-container>
@@ -190,14 +183,7 @@ export default {
         this.formData = {}
       }
     },
-    responseTableLists(id) {
-        console.log(id);
-
-            this.$router.push({
-                name: "ResponseTableLists",
-                params: { id: id },
-            });
-        },
+    
   },
   mounted() {
     this.isLoading = true;

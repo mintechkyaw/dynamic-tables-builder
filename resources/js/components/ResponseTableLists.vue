@@ -11,6 +11,7 @@
                 class="mt-6"
                 :items="transformedData"
                 :items-length="totalItems"
+                @update:options="fetchResponseTables"
                 :loading="loading"
             >
             </v-data-table-server>
@@ -27,51 +28,49 @@ export default {
             totalItems: 0,
             loading: false,
             id : this.$route.params.id,
-            // headers: [],
         };
     },
     computed: {
         ...mapGetters(["getResponseForms"]),
         transformedData() {
-            return this.getResponseForms?.data.map(item => {
+            return this.getResponseForms?.data.map((item) => {
                 const transformedItem = { ...item };
                 for (const key in transformedItem) {
                     if (Array.isArray(transformedItem[key])) {
-                        transformedItem[key] = transformedItem[key].join(', ');
+                        transformedItem[key] = transformedItem[key].join(", ");
                     }
                 }
                 return transformedItem;
             });
-        }
+        },
     },
     watch: {
         getResponseForms(forms) {
             console.log(forms);
 
-            this.totalItems = forms.data?.length;
-            // if (forms?.headers?.length) {
-            //     this.headers = forms.headers.map((key) => ({
-            //         title: key,
-            //         value: key,
-            //     }));
-            // }
+            this.totalItems = forms.pagination?.total;
+            this.itemsPerPage = forms.pagination?.per_page;
         },
     },
     methods: {
-        async fetchResponseTables(id) {
+        async fetchResponseTables({
+            page = 1,
+            itemsPerPage = 10,
+        } = {}) {
+            const id = this.$route.params.id;
             this.loading = true;
             try {
-                await this.$store.dispatch("fetchResponseTables", id);
+                await this.$store.dispatch("fetchResponseTables", {
+                    id: id,
+                    page: page,
+                    per_page: itemsPerPage,
+                });
             } catch (error) {
                 console.error("Error fetching forms:", error);
             } finally {
                 this.loading = false;
             }
         },
-    },
-    mounted() {
-        const id = this.$route.params.id;
-        this.fetchResponseTables(id);
     },
 };
 </script>

@@ -4,7 +4,7 @@ export default {
     state: {
         forms: [],
         form: {},
-        responseForms : null,
+        responseForms: null,
     },
     getters: {
         getForms(state) {
@@ -40,9 +40,15 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async fetchResponseTables({commit}, id) {
+        async fetchResponseTables({ commit }, data) {
+            const id = data.id;
+            let per_page = data.per_page;
+            let page = data.page;
+
             try {
-                const { data } = await api.get(`/forms/${id}/data`);
+                const { data } = await api.get(`/forms/${id}/data?per_page=${per_page}&page=${page}`);
+                console.log(data);
+
                 commit("responseForms", data);
             } catch (error) {
 
@@ -107,14 +113,14 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
-        async submituserForm({commit},formData){
-           try {
-            const res = await api.post(`/forms/${formData.id}/submit`,formData)
-           } catch (error) {
-            alert(e.response?.data?.message);
-            throw new Error(e.response?.data?.message);
+        async submituserForm({ commit }, formData) {
+            try {
+                const res = await api.post(`/forms/${formData.id}/submit`, formData)
+            } catch (error) {
+                alert(e.response?.data?.message);
+                throw new Error(e.response?.data?.message);
 
-           }
+            }
 
         }
     },
