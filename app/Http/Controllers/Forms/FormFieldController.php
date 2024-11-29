@@ -25,22 +25,7 @@ class FormFieldController extends Controller
     public function store(FormFieldRequest $request)
     {
         $data = $request->validated();
-        switch ($data['type']) {
-            case 'text':
-                $data['data_type'] = 'string';
-                break;
-            case 'number':
-                $data['data_type'] = 'integer';
-                break;
-            case 'check_box':
-                $data['data_type'] = 'json';
-                break;
-            case 'radio':
-                $data['data_type'] = 'enum';
-                break;
-            default:
-                break;
-        }
+        $data['data_type'] = $this->dataTypeChanger($data['type']);
         $data['options'] = isset($data['options']) &&
             ($data['type'] === 'check_box' || $data['type'] === 'radio')
             ? json_encode($data['options']) : null;
@@ -79,22 +64,7 @@ class FormFieldController extends Controller
     {
         if ($formField->form->status === 'drafted') {
             $data = $request->validated();
-            switch ($data['type']) {
-                case 'text':
-                    $data['data_type'] = 'string';
-                    break;
-                case 'number':
-                    $data['data_type'] = 'integer';
-                    break;
-                case 'check_box':
-                    $data['data_type'] = 'json';
-                    break;
-                case 'radio':
-                    $data['data_type'] = 'enum';
-                    break;
-                default:
-                    break;
-            }
+            $data['data_type'] = $this->dataTypeChanger($data['type']);
             $data['options'] = isset($data['options']) &&
                 ($data['type'] === 'check_box' || $data['type'] === 'radio')
                 ? json_encode($data['options']) : null;
@@ -140,5 +110,16 @@ class FormFieldController extends Controller
         return response()->json([
             'error' => true,
         ], 500);
+    }
+
+    private function dataTypeChanger($type)
+    {
+        return match ($type) {
+            'text' => 'string',
+            'number' => 'integer',
+            'check_box' => 'json',
+            'radio' => 'enum',
+            default => 'string'
+        };
     }
 }
