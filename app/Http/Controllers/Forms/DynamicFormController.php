@@ -229,9 +229,15 @@ class DynamicFormController extends Controller
         try {
             $perPage = $request->input('per_page', 10);
             $headers = $form->fields->pluck('column_name');
-            if ($perPage===-1) {
-                $paginatedData = DB::table($tableName)->all();
-            } else {
+            if ($perPage == -1) {
+                // Count the total number of records
+                $totalRecords = DB::table($tableName)->count();
+
+                // Use the total count for pagination
+                $paginatedData = DB::table($tableName)->paginate($totalRecords);
+
+            }
+            if ($perPage > -1) {
                 $paginatedData = DB::table($tableName)->paginate($perPage);
             }
             $data = $paginatedData->items();
