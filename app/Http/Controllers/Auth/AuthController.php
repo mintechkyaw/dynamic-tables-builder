@@ -15,6 +15,9 @@ class AuthController extends Controller
         $validator = Validator::make(request()->all(), [
             'name' => ['required', 'min:4', 'max:40'],
             'email' => ['required', 'email', 'email:rfc,dns', 'unique:users,email'],
+            'role_id' => ['required','string','exists:roles,id'],
+            'permissions' => ['required','array'],
+            'permissions.*' => ['required','exists:permissions,id'],
             'password' => ['required', 'min:6', 'max:30'],
         ]);
 
@@ -24,12 +27,15 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+        
         $user = User::create([
             'name' => request('name'),
             'email' => request('email'),
+            'role_id' => request('role_id'),
             'password' => Hash::make(request('password')),
         ]);
-        $user->assignRole('user');
+
+        $user->permissions()->sync(request('permissions'));
 
         return response()->json([
             'message' => 'User account successfully created. Please Login',

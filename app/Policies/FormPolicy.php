@@ -47,22 +47,5 @@ class FormPolicy
     public function delete(User $user, Form $form): bool
     {
         return $user->isSuperAdmin();
-
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Form $form): bool
-    {
-        return $user->id === $form->user_id;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Form $form): bool
-    {
-        return $user->id === $form->user_id;
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\AccessControl\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Forms\DynamicFormController;
@@ -36,4 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('roles', RoleController::class);
+    Route::apiResource('permissions', PermissionController::class);
 });

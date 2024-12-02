@@ -16,22 +16,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::factory(10)->create();
-        Permission::create([
-            'name' => 'manage-all',
-        ]);
+        // Permission::factory(10)->create();
+        // Permission::create([
+        //     'name' => 'manage-all',
+        // ]);
 
-        \App\Models\Form::factory()
-            ->has(\App\Models\FormField::factory()->count(10), 'fields')
-            ->count(5)
-            ->create();
-
-        $adminUser = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'role_id' => \App\Models\Role::factory(),
-            'password' => Hash::make('admin1234'),
-        ]);
-        $adminUser->assignRole('admin');
+        // \App\Models\Form::factory()
+        //     ->has(\App\Models\FormField::factory()->count(10), 'fields')
+        //     ->count(5)
+        //     ->create();
+        // User::create([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@gmail.com',
+        //     'role_id' => 11,
+        //     'password' => Hash::make('admin1234'),
+        // ]);
     }
 }

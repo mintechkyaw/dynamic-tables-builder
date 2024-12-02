@@ -13,7 +13,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return Role::all();
+        return Role::get()->pluck('name');
     }
 
     /**
