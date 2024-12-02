@@ -31,5 +31,10 @@ class DatabaseSeeder extends Seeder
         //     'role_id' => 11,
         //     'password' => Hash::make('admin1234'),
         // ]);
+
+        $predefinedPermisions = ['manage-all', 'form-create', 'form-read', 'form-update', 'form-delete'];
+        foreach ($predefinedPermisions as $p) {
+            Permission::create(['name' => $p]);
+        }
     }
 }

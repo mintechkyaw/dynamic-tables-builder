@@ -44,7 +44,7 @@ class User extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return $this->role->name === 'superAdmin' && $this->permissions()->where('name', 'manage-all')->exists();
+        return $this->role->name === 'superAdmin' || $this->permissions()->where('name', 'manage-all')->exists();
     }
 
     public function hasPermissionTo(string $permissionName)
