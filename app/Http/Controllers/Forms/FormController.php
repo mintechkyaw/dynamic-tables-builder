@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class FormController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Form::class, 'form');
+    }
+
     /**
      * Display a listing of the resource.
      */

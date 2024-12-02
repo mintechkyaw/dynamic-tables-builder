@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccessControl\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Forms\DynamicFormController;
 use App\Http\Controllers\Forms\FormController;
@@ -33,4 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('forms/{form}/submit', [DynamicFormController::class, 'insertDataIntoDynamicTable']);
 
     Route::apiResource('users', UserController::class);
+
+    Route::apiResource('roles', RoleController::class);
 });

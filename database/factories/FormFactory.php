@@ -17,7 +17,7 @@ class FormFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User::factory()->withRole('user'),
+            'user_id' => \App\Models\User::factory(),
             'name' => $this->faker->words(3, true),
             'slug' => $this->faker->unique()->slug(),
             'status' => $this->faker->randomElement(['drafted', 'published']),

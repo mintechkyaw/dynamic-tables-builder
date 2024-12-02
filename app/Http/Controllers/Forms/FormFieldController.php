@@ -9,6 +9,11 @@ use App\Models\FormField;
 
 class FormFieldController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(FormField::class, 'form_field');
+    }
+
     /**
      * Display a listing of the resource.
      */
