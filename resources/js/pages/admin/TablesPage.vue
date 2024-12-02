@@ -2,6 +2,13 @@
     <v-app>
         <v-container class="mt-3">
             <h3 class="my-2">Forms Lists</h3>
+            <div v-if="loading" class="loading-overlay">
+                <v-progress-circular
+                    :size="35"
+                    color="primary"
+                    indeterminate
+                ></v-progress-circular>
+            </div>
             <v-data-table-server
                 :items="publishedTables"
                 :headers="headers"
@@ -12,7 +19,7 @@
             >
                 <template v-slot:body="{ items }">
                     <tr v-for="item in items" :key="item.id">
-                        <td>{{ item.id }}</td>
+                        <!-- <td>{{ item.id }}</td> -->
                         <td>{{ item.name }}</td>
                         <td class="text-success">{{ item.status }}</td>
                         <td>
@@ -42,7 +49,7 @@ export default {
     data() {
         return {
             headers: [
-                { title: "ID", value: "id" },
+                // { title: "ID", value: "id" },
                 { title: "Name", value: "name" },
                 { title: "Status", value: "status" },
                 { title: "Actions", value: "actions", sortable: false },
@@ -50,6 +57,7 @@ export default {
             publishedTables: [],
             totalItems: 0,
             loading: false,
+
         };
     },
     computed: {
@@ -86,3 +94,16 @@ export default {
     },
 };
 </script>
+<style scoped>
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background: rgba(59, 57, 57, 0.8); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
