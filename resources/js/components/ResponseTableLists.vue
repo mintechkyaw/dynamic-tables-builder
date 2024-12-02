@@ -45,8 +45,6 @@ export default {
     },
     watch: {
         getResponseForms(forms) {
-            console.log(forms);
-
             this.totalItems = forms.pagination?.total;
             this.itemsPerPage = forms.pagination?.per_page;
         },
