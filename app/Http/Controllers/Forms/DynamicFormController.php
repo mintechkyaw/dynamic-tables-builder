@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Forms;
 
+use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
@@ -22,6 +23,7 @@ class DynamicFormController extends Controller
         try {
             $this->generateDynamicMigration($form);
             Artisan::call('migrate');
+            PermissionController::generate($form);
             $form->update(['status' => 'published']);
 
             return response()->json(['message' => 'Form published successfully']);
@@ -213,8 +215,17 @@ class DynamicFormController extends Controller
                 unlink($file);
             }
         }
+        try {
+            PermissionController::delete($form);
+        } catch (\Exception $e) {
+            logger()->error("Failed to delete permissions: {$tableName}. Error: {$e->getMessage()}");
+        }
 
-        Schema::dropIfExists($tableName);
+        try {
+            Schema::dropIfExists($tableName);
+        } catch (\Exception $e) {
+            logger()->error("Failed to drop table: {$tableName}. Error: {$e->getMessage()}");
+        }
     }
 
     public function getDataFromDynamicTable(Form $form, Request $request)

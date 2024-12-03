@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
         //     ->has(\App\Models\FormField::factory()->count(10), 'fields')
         //     ->count(5)
         //     ->create();
-        $role =   Role::create([
-            'name' => "superAdmin",
+        $role = Role::create([
+            'name' => 'superAdmin',
         ]);
         User::create([
             'name' => 'Admin',
@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => $role->id,
             'password' => Hash::make('admin1234'),
         ]);
-
 
         $predefinedPermisions = ['manage-all', 'form-create', 'form-read', 'form-update', 'form-delete'];
         foreach ($predefinedPermisions as $p) {

@@ -29,11 +29,7 @@ class FormFieldController extends Controller
      */
     public function store(FormFieldRequest $request)
     {
-        $data = $request->validated();
-        $data['data_type'] = $this->dataTypeChanger($data['type']);
-        $data['options'] = isset($data['options']) &&
-            ($data['type'] === 'check_box' || $data['type'] === 'radio')
-            ? json_encode($data['options']) : null;
+        $data = $this->getData($request);
         try {
             FormField::create($data);
 
@@ -68,11 +64,7 @@ class FormFieldController extends Controller
     public function update(FormFieldRequest $request, FormField $formField)
     {
         if ($formField->form->status === 'drafted') {
-            $data = $request->validated();
-            $data['data_type'] = $this->dataTypeChanger($data['type']);
-            $data['options'] = isset($data['options']) &&
-                ($data['type'] === 'check_box' || $data['type'] === 'radio')
-                ? json_encode($data['options']) : null;
+            $data = $this->getData($request);
             try {
                 $formField->update($data);
 
@@ -124,7 +116,17 @@ class FormFieldController extends Controller
             'number' => 'integer',
             'check_box' => 'json',
             'radio' => 'enum',
-            default => 'string'
         };
+    }
+
+    private function getData(FormFieldRequest $request): mixed
+    {
+        $data = $request->validated();
+        $data['data_type'] = $this->dataTypeChanger($data['type']);
+        $data['options'] = isset($data['options']) &&
+        ($data['type'] === 'check_box' || $data['type'] === 'radio')
+            ? json_encode($data['options']) : null;
+
+        return $data;
     }
 }

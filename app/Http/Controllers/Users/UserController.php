@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,12 +27,21 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}//
+    public function store(UserRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validated();
+        $user = User::create($data);
+        $user->permissions()->sync($data['permissions']);
+
+        return response()->json([
+            'message' => 'User Created Successfully!',
+        ], 201);
+    }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user): UserResource
     {
         return new UserResource($user);
     }
@@ -39,9 +49,17 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $user->update($data);
+        if (! empty($data['permissions'])) {
+            $user->permissions()->sync($data['permissions']);
+        }
+
+        return response()->json([
+            'message' => 'User Information Updated Successfully!',
+        ], 200);
     }
 
     /**
@@ -49,6 +67,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User Deleted!',
+        ]);
     }
 }
