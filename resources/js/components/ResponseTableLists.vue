@@ -86,7 +86,11 @@ export default {
         async exportToExcel() {
             try {
                 const id = this.$route.params.id;
+
                 const response = await axios.get(`/api/forms/${id}/export`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
                     responseType: 'blob'  // Important for file download
                 });
 
