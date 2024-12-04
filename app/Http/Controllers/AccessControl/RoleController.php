@@ -13,13 +13,13 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return Role::get()->pluck('name');
+        return response()->json(['data' => Role::get(['id', 'name'])]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RoleRequest $request)
+    public function store(RoleRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
         Role::create($data);
@@ -32,7 +32,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(Role $role): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'data' => $role,
@@ -42,7 +42,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(RoleRequest $request, Role $role)
+    public function update(RoleRequest $request, Role $role): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
         $role->update($data);

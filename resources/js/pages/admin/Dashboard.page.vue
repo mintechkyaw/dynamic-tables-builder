@@ -10,6 +10,12 @@
             <v-tab to="/" prepend-icon="fa-solid fa-house">
                 Home
             </v-tab>
+            <v-tab to="/user-list" prepend-icon="fa-solid fa-users">
+                Users
+            </v-tab>
+            <v-tab to="/user-create" prepend-icon="fa-solid fa-user-plus">
+                Create User
+            </v-tab>
             <v-tab to="/forms" prepend-icon="fa-brands fa-wpforms">
                 Forms
             </v-tab>

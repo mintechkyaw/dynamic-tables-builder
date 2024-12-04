@@ -37,5 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('roles', RoleController::class);
-    Route::apiResource('permissions', PermissionController::class)->only('index', 'show');
+    Route::apiResource('permissions', PermissionController::class)->only(['index', 'show']);
 });

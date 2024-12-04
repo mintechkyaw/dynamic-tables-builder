@@ -26,9 +26,18 @@ class PermissionController extends Controller
 
     public static function generate(Form $form)
     {
-        $perimissions = ["$form->slug-create", "$form->slug-read", "$form->slug-update", "$form->slug-delete"];
-        foreach ($perimissions as $p) {
+        $permissions = ["$form->slug-create", "$form->slug-read", "$form->slug-update", "$form->slug-delete"];
+        foreach ($permissions as $p) {
             Permission::create(['name' => $p]);
+        }
+    }
+
+    public static function delete(Form $form)
+    {
+        $permissions = ["$form->slug-create", "$form->slug-read", "$form->slug-update", "$form->slug-delete"];
+        foreach ($permissions as $p) {
+            $permission = Permission::where('name', $p)->first();
+            $permission->delete();
         }
     }
 }

@@ -8,6 +8,8 @@ import TableSubmitPage from "../pages/admin/TableSubmitPage.vue";
 import FormFieldPage from "../pages/admin/FormFieldPage.vue";
 import DetailsPage from "../pages/admin/DetailsPage.vue";
 import ResponseTableLists from "../components/ResponseTableLists.vue";
+import UserCreatePage from "../pages/admin/UserCreatePage.vue";
+import UserListPage from "../pages/admin/UserListPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -57,6 +59,16 @@ const router = createRouter({
                     path:"/responseTableLists/:id",
                     component: ResponseTableLists,
                 },
+                {
+                    name:"UserCreatePage",
+                    path:"/user-create",
+                    component : UserCreatePage
+                },
+                {
+                    name : "UserListPage",
+                    path : "/user-list",
+                    component : UserListPage
+                }
             ],
         },
     ],

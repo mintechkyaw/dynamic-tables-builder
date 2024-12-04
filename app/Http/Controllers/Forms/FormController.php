@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Forms;
 
-use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStoreRequest;
 use App\Http\Resources\FormResource;
@@ -42,7 +41,6 @@ class FormController extends Controller
         try {
             $data['status'] = 'drafted';
             $form = auth()->user()->forms()->create($data);
-            PermissionController::generate($form);
 
             return response()->json(
                 [
