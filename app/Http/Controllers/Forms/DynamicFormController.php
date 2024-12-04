@@ -18,7 +18,7 @@ class DynamicFormController extends Controller
     public function publish(Form $form)
     {
         //I want to check if the user has the permission to publish the form
-        $this->authorize('create');
+        auth()->user()->can('create', $form);
         if ($form->status === 'published') {
             return response()->json(['error' => 'Form is already published'], 400);
         }
@@ -37,7 +37,7 @@ class DynamicFormController extends Controller
         }
     }
 
-private function generateDynamicMigration(Form $form)
+    private function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
         $migrationName = 'create_'.$form->slug.'_table';
@@ -179,7 +179,7 @@ private function generateDynamicMigration(Form $form)
         }
     }
 
-private function validateDynamicData(Form $form, array $data)
+    private function validateDynamicData(Form $form, array $data)
     {
         $rules = $form->fields->mapWithKeys(function ($field) {
             $rule = match ($field->data_type) {
@@ -211,9 +211,6 @@ private function validateDynamicData(Form $form, array $data)
 
     public static function destroyDynamicForm(Form $form)
     {
-        // Use policy check via Gate facade
-        Gate::authorize('delete', $form);
-
         $tableName = $form->slug;
         $migrationName = 'create_'.$tableName.'_table';
 
