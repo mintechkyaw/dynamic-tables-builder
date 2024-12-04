@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class UserRequest extends FormRequest
                 'role_id' => 'required|string|exists:roles,id',
                 'permissions' => 'required|array',
                 'permissions.*' => 'required|exists:permissions,id',
-                'password' => 'required|password',
+                'password' => ['required', Password::defaults()],
             ];
         }
 
@@ -37,7 +38,7 @@ class UserRequest extends FormRequest
             'email' => 'sometimes|email:rfc,dns|unique:users,email,except,'.$this->route('user'),
             'role_id' => 'sometimes|string|exists:roles,id',
             'permissions' => 'sometimes|array',
-            'permissions.*' => 'sometimes|exists:permissions,id',
+            'permissions.*' => 'required_if_accepted:permissions,|exists:permissions,id',
         ];
     }
 }

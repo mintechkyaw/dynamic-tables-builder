@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -91,5 +92,15 @@ class AuthController extends Controller
         $user = auth()->user();
 
         return new UserResource($user);
+    }
+
+    public function updateUserInfo(ProfileUpdateRequest $request)
+    {
+        $data = $request->validated();
+        auth()->user()->update($data);
+
+        return response()->json([
+            'data' => 'You have successfully updated your profile.',
+        ], 201);
     }
 }
