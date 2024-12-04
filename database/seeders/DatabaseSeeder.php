@@ -17,28 +17,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Permission::factory(10)->create();
-        // Permission::create([
-        //     'name' => 'manage-all',
-        // ]);
-
-        // \App\Models\Form::factory()
-        //     ->has(\App\Models\FormField::factory()->count(10), 'fields')
-        //     ->count(5)
-        //     ->create();
+        \App\Models\Form::factory()
+            ->has(\App\Models\FormField::factory()->count(10), 'fields')
+            ->count(5)
+            ->create();
         $role = Role::create([
             'name' => 'superAdmin',
         ]);
-        User::create([
+        $predefinedPermissions = ['manage-all', 'form-create', 'form-read', 'form-update', 'form-delete', 'user-create', 'user-read', 'user-update', 'user-delete'];
+        foreach ($predefinedPermissions as $p) {
+            Permission::create(['name' => $p]);
+        }
+        $user = User::create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'role_id' => $role->id,
             'password' => Hash::make('admin1234'),
         ]);
-
-        $predefinedPermisions = ['manage-all', 'form-create', 'form-read', 'form-update', 'form-delete'];
-        foreach ($predefinedPermisions as $p) {
-            Permission::create(['name' => $p]);
-        }
+        $user->permissions()->attach(Permission::where(['name' => 'manage-all'])->pluck('id'));
     }
 }

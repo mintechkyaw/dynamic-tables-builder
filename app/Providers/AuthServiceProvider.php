@@ -8,6 +8,7 @@ use App\Models\FormField;
 use App\Models\User;
 use App\Policies\FormFieldPolicy;
 use App\Policies\FormPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -19,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        User::class => UserPolicy::class,
         Form::class => FormPolicy::class,
         FormField::class => FormFieldPolicy::class,
     ];

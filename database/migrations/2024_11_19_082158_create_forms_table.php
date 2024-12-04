@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique()->nullable();
             $table->enum('status', allowed: ['drafted', 'published'])->default('drafted');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

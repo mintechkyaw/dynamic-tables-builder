@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,7 +36,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user = User::create($data);
-        $user->permissions()->sync($data['permissions']);
+        $user->permissions()->attach($data['permissions']);
 
         return response()->json([
             'message' => 'User Created Successfully!',
@@ -54,7 +59,7 @@ class UserController extends Controller
         $data = $request->validated();
         $user->update($data);
         if (! empty($data['permissions'])) {
-            $user->permissions()->sync($data['permissions']);
+            $user->permissions()->attach($data['permissions']);
         }
 
         return response()->json([
