@@ -6,7 +6,6 @@
                     >Back</v-btn
                 >
             </router-link>
-            <!-- <h3 class="my-2">Forms Lists</h3> -->
             <v-data-table-server
                 class="mt-6"
                 :items="transformedData"
@@ -15,12 +14,25 @@
                 :loading="loading"
             >
             </v-data-table-server>
+            <button
+                @click="exportToExcel"
+                :disabled="!hasData"
+                :class="[
+                    'px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50',
+                    hasData
+                        ? 'bg-green-500 text-white hover:bg-green-600'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ]"
+            >
+                Export to Excel
+            </button>
         </v-container>
     </v-app>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import axios from 'axios';
 
 export default {
     data() {
@@ -31,8 +43,11 @@ export default {
     },
     computed: {
         ...mapGetters(["getResponseForms"]),
+        hasData() {
+            return this.getResponseForms?.data?.length > 0;
+        },
         transformedData() {
-            return this.getResponseForms?.data.map((item) => {
+            return this.getResponseForms?.data?.map((item) => {
                 const transformedItem = { ...item };
                 for (const key in transformedItem) {
                     if (Array.isArray(transformedItem[key])) {
@@ -40,7 +55,7 @@ export default {
                     }
                 }
                 return transformedItem;
-            });
+            }) || [];
         },
     },
     watch: {
@@ -68,6 +83,30 @@ export default {
                 this.loading = false;
             }
         },
+        async exportToExcel() {
+            try {
+                const id = this.$route.params.id;
+                const response = await axios.get(`/api/forms/${id}/export`, {
+                    responseType: 'blob'  // Important for file download
+                });
+
+                // Get form name from store or use a default name
+                const fileName = this.getResponseForms?.data[0]?.name || 'form-data';
+
+                // Create download link
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${fileName}_data.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Export failed:', error);
+                // Use alert box
+                alert('Export failed: ' + error.message);
+            }
+        }
     },
 };
 </script>

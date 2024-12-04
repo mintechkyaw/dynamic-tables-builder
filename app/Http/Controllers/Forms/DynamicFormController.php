@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DynamicTableExport;
 
 class DynamicFormController extends Controller
 {
@@ -290,6 +292,44 @@ class DynamicFormController extends Controller
             Log::error("Error retrieving data: {$e->getMessage()}", ['exception' => $e]);
 
             return response()->json(['error' => 'Failed to retrieve data'], 500);
+        }
+    }
+
+    public function exportToExcel(Form $form)
+    {
+        // Check read permission
+        Gate::authorize('read-data', $form);
+
+        $tableName = $form->slug;
+
+        if (empty($tableName) || !Schema::hasTable($tableName)) {
+            return response()->json(['error' => 'Table does not exist'], 400);
+        }
+
+        try {
+            $headers = $form->fields->pluck('column_name')->toArray();
+            $data = DB::table($tableName)->get()
+                ->map(function ($item) use ($form) {
+                    $row = [];
+                    foreach ($form->fields as $field) {
+                        $value = $item->{$field->column_name};
+                        if ($field->data_type === 'json' && $value) {
+                            $value = json_decode($value, true);
+                            $value = is_array($value) ? implode(', ', $value) : $value;
+                        }
+                        $row[$field->column_name] = $value;
+                    }
+                    return $row;
+                })
+                ->toArray();
+
+            return Excel::download(
+                new DynamicTableExport($data, $headers),
+                "{$form->name}_data.xlsx"
+            );
+        } catch (\Exception $e) {
+            Log::error("Error exporting data: {$e->getMessage()}", ['exception' => $e]);
+            return response()->json(['error' => 'Failed to export data'], 500);
         }
     }
 }
