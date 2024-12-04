@@ -31,7 +31,7 @@ class PermissionController extends Controller
         }
     }
 
-    public static function delete(Form $form)
+    public static function deletePermissions(Form $form)
     {
         $permissions = ["$form->slug-create", "$form->slug-read", "$form->slug-update", "$form->slug-delete"];
         foreach ($permissions as $p) {

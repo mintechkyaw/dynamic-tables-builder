@@ -39,14 +39,16 @@ class DynamicFormController extends Controller
         }
     }
 
-    private function generateDynamicMigration(Form $form)
+    private function generateDynamicMigration(Form $form): void
     {
         $fields = $form->fields;
         $migrationName = 'create_'.$form->slug.'_table';
         $tableName = $form->slug;
 
         if (empty($tableName)) {
-            return response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
+            response()->json(['error' => 'Table name cannot be empty. Please ensure the form has a valid slug.'], 400);
+
+            return;
         }
 
         $fieldDefinitions = $fields->map(function ($field) {
@@ -224,7 +226,9 @@ class DynamicFormController extends Controller
             }
         }
         try {
-            PermissionController::delete($form);
+            if ($form->slug === 'published') {
+                PermissionController::deletePermissions($form);
+            }
         } catch (\Exception $e) {
             logger()->error("Failed to delete permissions: {$tableName}. Error: {$e->getMessage()}");
         }

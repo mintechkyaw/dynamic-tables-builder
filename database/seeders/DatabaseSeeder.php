@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\Form::factory()
             ->has(\App\Models\FormField::factory()->count(10), 'fields')
-            ->count(5)
+            ->count(3)
             ->create();
         $role = Role::create([
             'name' => 'superAdmin',
