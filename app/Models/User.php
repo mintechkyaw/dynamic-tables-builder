@@ -9,7 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory,HasUuids;
+    use HasApiTokens, HasFactory, HasUuids;
 
     protected $fillable = [
         'name',
@@ -34,7 +34,7 @@ class User extends Authenticatable
 
     public function hasPermissionTo(string $permissionName): bool
     {
-        return (bool) $this->permissions()->where('name', $permissionName)->exists();
+        return (bool)$this->permissions()->where('name', $permissionName)->exists();
     }
 
     public function forms(): \Illuminate\Database\Eloquent\Relations\HasMany
