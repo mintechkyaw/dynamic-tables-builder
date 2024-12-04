@@ -10,6 +10,7 @@ import DetailsPage from "../pages/admin/DetailsPage.vue";
 import ResponseTableLists from "../components/ResponseTableLists.vue";
 import UserCreatePage from "../pages/admin/UserCreatePage.vue";
 import UserListPage from "../pages/admin/UserListPage.vue";
+import RolePage from "../pages/admin/RolePage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -68,6 +69,11 @@ const router = createRouter({
                     name : "UserListPage",
                     path : "/user-list",
                     component : UserListPage
+                },
+                {
+                    name : "RolePage",
+                    path : "/role",
+                    component : RolePage
                 }
             ],
         },

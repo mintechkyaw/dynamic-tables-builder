@@ -16,6 +16,9 @@
             <v-tab to="/user-create" prepend-icon="fa-solid fa-user-plus">
                 Create User
             </v-tab>
+            <v-tab to="/role" prepend-icon="fa-solid fa-handcuffs">
+                Role
+            </v-tab>
             <v-tab to="/forms" prepend-icon="fa-brands fa-wpforms">
                 Forms
             </v-tab>
@@ -69,9 +72,10 @@ export default {
     computed: {
         ...mapGetters(["authUser"]),
     },
-    created() {
+    async created() {
         // this.fetchForms();
-        this.authUserApi();
+        await this.authUserApi();
+        // console.log(this.authUser);
     },
 }
 </script>
