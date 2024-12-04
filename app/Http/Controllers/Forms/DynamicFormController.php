@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Forms;
 
+use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Artisan;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +17,8 @@ class DynamicFormController extends Controller
 {
     public function publish(Form $form)
     {
+        //I want to check if the user has the permission to publish the form
+        Gate::authorize('form-update', $form) || abort(403, 'Unauthorized action.');
         if ($form->status === 'published') {
             return response()->json(['error' => 'Form is already published'], 400);
         }
@@ -22,6 +26,7 @@ class DynamicFormController extends Controller
         try {
             $this->generateDynamicMigration($form);
             Artisan::call('migrate');
+            PermissionController::generate($form);
             $form->update(['status' => 'published']);
 
             return response()->json(['message' => 'Form published successfully']);
@@ -103,6 +108,7 @@ class DynamicFormController extends Controller
 
     private function getFieldDefinitions($fields)
     {
+        Gate::authorize('form-read') || abort(403, 'Unauthorized action.');
         return $fields->map(function ($field) {
             $type = $this->getFieldType($field->data_type);
             $columnDefinition = "\$table->{$type}('{$field->column_name}')";
@@ -136,6 +142,7 @@ class DynamicFormController extends Controller
 
     public function insertDataIntoDynamicTable(Form $form, Request $request)
     {
+        Gate::authorize('form-update', $form) || abort(403, 'Unauthorized action.');
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
         }
@@ -203,6 +210,7 @@ class DynamicFormController extends Controller
 
     public static function destroyDynamicForm(Form $form)
     {
+        Gate::authorize('form-delete', $form) || abort(403, 'Unauthorized action.');
         $tableName = $form->slug;
         $migrationName = 'create_'.$tableName.'_table';
 
@@ -213,12 +221,22 @@ class DynamicFormController extends Controller
                 unlink($file);
             }
         }
+        try {
+            PermissionController::delete($form);
+        } catch (\Exception $e) {
+            logger()->error("Failed to delete permissions: {$tableName}. Error: {$e->getMessage()}");
+        }
 
-        Schema::dropIfExists($tableName);
+        try {
+            Schema::dropIfExists($tableName);
+        } catch (\Exception $e) {
+            logger()->error("Failed to drop table: {$tableName}. Error: {$e->getMessage()}");
+        }
     }
 
     public function getDataFromDynamicTable(Form $form, Request $request)
     {
+        Gate::authorize('form-read', $form) || abort(403, 'Unauthorized action.');
         $tableName = $form->slug;
 
         if (empty($tableName)) {
