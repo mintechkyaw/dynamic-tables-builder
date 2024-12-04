@@ -86,7 +86,6 @@ class DynamicFormController extends Controller
             {
                 Schema::create('$tableName', function (Blueprint \$table) {
                     \$table->id();
-
                     $fieldDefinitions
                     \$table->timestamps();
                 });

@@ -32,7 +32,7 @@ class FormField extends Model
         'required' => 'boolean',
     ];
 
-    public function form()
+    public function form(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Form::class);
     }

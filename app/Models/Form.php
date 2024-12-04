@@ -30,12 +30,12 @@ class Form extends Model
         'user_id' => 'string',
     ];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function fields()
+    public function fields(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(FormField::class);
     }

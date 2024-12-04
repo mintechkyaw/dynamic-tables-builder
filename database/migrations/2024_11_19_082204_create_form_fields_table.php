@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,16 +12,15 @@ return new class extends Migration
     {
         Schema::create('form_fields', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('form_id');
+            $table->foreignUuid('form_id')->constrained('forms')->cascadeOnDelete();
             $table->string('column_name');
             $table->enum('data_type', ['string', 'integer', 'json', 'enum', 'date']);
             $table->enum('type', ['text', 'number', 'check_box', 'radio', 'calendar']);
             $table->json('options')->nullable();
             $table->boolean('required')->default(false);
             $table->timestamps();
-            $table->unique(['form_id', 'column_name']);
 
-            $table->foreign('form_id')->references('id')->on('forms')->cascadeOnDelete();
+            $table->unique(['form_id', 'column_name']);
         });
     }
 

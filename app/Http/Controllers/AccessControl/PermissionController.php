@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AccessControl;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PermissionResource;
 use App\Models\Form;
 use App\Models\Permission;
 
@@ -10,11 +11,9 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        return response()->json(
-            [
-                'data' => Permission::get(['id', 'name']),
-            ]
-        );
+        $permissions = Permission::get();
+
+        return PermissionResource::collection($permissions);
     }
 
     public function show(Permission $permission)
