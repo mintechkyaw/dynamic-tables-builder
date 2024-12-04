@@ -2,13 +2,14 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Illuminate\Support\Collection;
 
 class DynamicTableExport implements FromCollection, WithHeadings
 {
     protected $data;
+
     protected $headers;
 
     public function __construct($data, $headers)

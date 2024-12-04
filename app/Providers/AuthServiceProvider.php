@@ -33,18 +33,18 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('create-data', function (User $user, Form $form) {
-            return $user->hasPermissionTo("$form->slug-create");
+            return $user->isSuperAdmin() || $user->hasPermissionTo("$form->slug-create");
         });
         Gate::define('read-data', function (User $user, Form $form) {
-            return $user->hasPermissionTo("$form->slug-read");
+            return $user->isSuperAdmin() || $user->hasPermissionTo("$form->slug-read");
         });
 
         Gate::define('update-data', function (User $user, Form $form) {
-            return $user->hasPermissionTo("$form->slug-update");
+            return $user->isSuperAdmin() || $user->hasPermissionTo("$form->slug-update");
         });
 
         Gate::define('delete-data', function (User $user, Form $form) {
-            return $user->hasPermissionTo("$form->slug-delete");
+            return $user->isSuperAdmin() || $user->hasPermissionTo("$form->slug-delete");
         });
 
     }

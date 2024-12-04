@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Forms;
 
+use App\Exports\DynamicTableExport;
 use App\Http\Controllers\AccessControl\PermissionController;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\DynamicTableExport;
 
 class DynamicFormController extends Controller
 {
@@ -302,7 +302,7 @@ class DynamicFormController extends Controller
 
         $tableName = $form->slug;
 
-        if (empty($tableName) || !Schema::hasTable($tableName)) {
+        if (empty($tableName) || ! Schema::hasTable($tableName)) {
             return response()->json(['error' => 'Table does not exist'], 400);
         }
 
@@ -319,6 +319,7 @@ class DynamicFormController extends Controller
                         }
                         $row[$field->column_name] = $value;
                     }
+
                     return $row;
                 })
                 ->toArray();
@@ -329,6 +330,7 @@ class DynamicFormController extends Controller
             );
         } catch (\Exception $e) {
             Log::error("Error exporting data: {$e->getMessage()}", ['exception' => $e]);
+
             return response()->json(['error' => 'Failed to export data'], 500);
         }
     }
