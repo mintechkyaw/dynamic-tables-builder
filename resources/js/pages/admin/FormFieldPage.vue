@@ -12,13 +12,13 @@
             <div>
                 <v-card style="padding: 1rem">
                     <v-text-field v-model="name" label="Field Name" outlined dense required></v-text-field>
-                    <v-select v-model="selectedDataType" :items="fieldDataType" label="Select Data Type" outlined dense required></v-select>
-                    <div v-if="['json', 'enum'].includes(selectedDataType)">
+                    <v-select v-model="type" :items="fieldDataType" label="Select Field Type" outlined dense required></v-select>
+                    <div v-if="['check_box', 'radio'].includes(type)">
                         <div>
                             <h4>Options</h4>
                             <v-list v-for="(option,index) in options" :key="index" class="mb-1">
                                 <span>{{ option }}</span>
-                                <v-btn @click="removeOption" size="x-small" color="warning" icon="fa fa-trash" variant="plain"></v-btn>
+                                <v-btn @click="removeOption(index)" size="x-small" color="warning" icon="fa fa-trash" variant="plain"></v-btn>
                             </v-list>
                         </div>
                         <v-text-field v-model="newOption" label="Add Option" outlined dense></v-text-field>
@@ -53,7 +53,7 @@
                             <td>{{ field.column_name }}</td>
                             <td>{{ field.data_type }}</td>
                             <td>{{field.type}}</td>
-                            <td>{{ field.options }}</td>
+                            <td><v-chip color="primary" variant="flat" class="me-1" v-for="option in field.options">{{ option }}</v-chip> </td>
                             <td>
                                 <v-btn @click="deleteFieldBtn(field.id)" size="x-small" color="danger" icon="fa-regular fa-trash-can"></v-btn>
                             </td>
@@ -75,10 +75,9 @@ import {
 export default {
     data() {
         return {
-            fieldDataType: ['string', 'integer', 'json', 'enum', 'date'],
+            fieldDataType: ['text', 'number', 'check_box', 'radio', 'calendar'],
             newOption: "",
             name: "",
-            selectedDataType: "",
             type: "",
             options: [],
             required: false,
@@ -91,16 +90,6 @@ export default {
         ...mapGetters(["getForm"]),
         formFields() {
             return this.getFormFields;
-        },
-        fieldType() {
-            const typeMapping = {
-                string: "text",
-                integer: "number",
-                json: "check_box",
-                enum: "radio",
-                date: "calendar",
-            };
-            return typeMapping[this.selectedDataType] || "unknown";
         },
     },
     async created() {
@@ -121,15 +110,14 @@ export default {
         },
         async submitField() {
             try {
-                if (!this.selectedDataType) {
-                alert("Please select a data type.");
+                if (!this.fieldDataType.includes(this.type)) {
+                alert("Please select a valid field type.");
                 return;
             }
             const fieldData = {
                 form_id: this.$route.params.id,
                 column_name: this.name,
-                data_type: this.selectedDataType,
-                type: this.fieldType,
+                type: this.type,
                 options: this.options.length ? this.options : null,
                 required: this.required ? 1 : 0,
             }
@@ -148,7 +136,6 @@ export default {
         },
         clearField() {
             this.name = "";
-            this.selectedDataType = "";
             this.type = "";
             this.options = [];
             this.required = false;

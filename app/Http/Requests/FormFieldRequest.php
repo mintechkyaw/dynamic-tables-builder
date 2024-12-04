@@ -12,7 +12,6 @@ class FormFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // return auth()->user()->forms()->where('id', $this->form_id)->exists();
         return true;
 
     }
@@ -30,7 +29,7 @@ class FormFieldRequest extends FormRequest
                     Rule::unique('form_fields')->where(function ($query) {
                         return $query->where('form_id', $this->form_id);
                     })->ignore($this->route('form_field')->id),
-                'type' => 'sometimes|string|in:text,number,check_box,radio',
+                'type' => 'sometimes|string|in:text,number,check_box,radio,calendar',
                 'options' => [
                     Rule::excludeIf($this->type !== 'check_box' && $this->type !== 'radio'),
                     Rule::requiredIf(in_array($this->type, ['check_box', 'radio'])),

@@ -116,6 +116,7 @@ class FormFieldController extends Controller
             'number' => 'integer',
             'check_box' => 'json',
             'radio' => 'enum',
+            'calendar' => 'date'
         };
     }
 
