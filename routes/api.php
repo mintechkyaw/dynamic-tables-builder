@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'authUserInfo']);
     Route::put('/user', [AuthController::class, 'updateUserInfo']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/forms/{form}/export', [DynamicFormController::class, 'exportToExcel']);
 
     /*Forms and form fields Routes*/
     Route::apiResource('forms', FormController::class);
