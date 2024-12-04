@@ -18,7 +18,7 @@ class DynamicFormController extends Controller
     public function publish(Form $form)
     {
         //I want to check if the user has the permission to publish the form
-        Gate::authorize('form-update', $form) || abort(403, 'Unauthorized action.');
+        $this->authorize('create');
         if ($form->status === 'published') {
             return response()->json(['error' => 'Form is already published'], 400);
         }
@@ -37,7 +37,7 @@ class DynamicFormController extends Controller
         }
     }
 
-    public function generateDynamicMigration(Form $form)
+private function generateDynamicMigration(Form $form)
     {
         $fields = $form->fields;
         $migrationName = 'create_'.$form->slug.'_table';
@@ -108,7 +108,7 @@ class DynamicFormController extends Controller
 
     private function getFieldDefinitions($fields)
     {
-        Gate::authorize('form-read') || abort(403, 'Unauthorized action.');
+
         return $fields->map(function ($field) {
             $type = $this->getFieldType($field->data_type);
             $columnDefinition = "\$table->{$type}('{$field->column_name}')";
@@ -142,7 +142,9 @@ class DynamicFormController extends Controller
 
     public function insertDataIntoDynamicTable(Form $form, Request $request)
     {
-        Gate::authorize('form-update', $form) || abort(403, 'Unauthorized action.');
+        // Use create-data gate which checks for {form-slug}-create permission
+        Gate::authorize('create-data', $form);
+
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
         }
@@ -178,7 +180,7 @@ class DynamicFormController extends Controller
         }
     }
 
-    public function validateDynamicData(Form $form, array $data)
+private function validateDynamicData(Form $form, array $data)
     {
         $rules = $form->fields->mapWithKeys(function ($field) {
             $rule = match ($field->data_type) {
@@ -210,7 +212,9 @@ class DynamicFormController extends Controller
 
     public static function destroyDynamicForm(Form $form)
     {
-        Gate::authorize('form-delete', $form) || abort(403, 'Unauthorized action.');
+        // Use policy check via Gate facade
+        Gate::authorize('delete', $form);
+
         $tableName = $form->slug;
         $migrationName = 'create_'.$tableName.'_table';
 
@@ -236,7 +240,9 @@ class DynamicFormController extends Controller
 
     public function getDataFromDynamicTable(Form $form, Request $request)
     {
-        Gate::authorize('form-read', $form) || abort(403, 'Unauthorized action.');
+        // Use read-data gate which checks for {form-slug}-read permission
+        Gate::authorize('read-data', $form);
+
         $tableName = $form->slug;
 
         if (empty($tableName)) {
