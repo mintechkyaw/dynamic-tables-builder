@@ -10,23 +10,36 @@ export default {
         },
     },
     mutations: {
-        setRole(state, roles) {
+        setRoles(state, roles) {
             state.roles = roles;
         },
     },
     actions: {
         async fetchRoles({ commit }) {
             try {
-                const res = await api.get("/roles");
-                console.log(res);
+                const { data } = await api.get("/roles");
+                // console.log(res);
+                commit("setRoles", data.data);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }
         },
         async createRole({ commit }, role) {
             try {
-                const res = await api.post("/roles", role);
-                console.log(res);
+                const { data } = await api.post("/roles", {
+                    name: role,
+                });
+                // console.log(data);
+                alert(data.message);
+            } catch (e) {
+                throw new Error(e.response?.data?.message);
+            }
+        },
+        async deleteRole({ commit }, roleId) {
+            try {
+                const { data } = await api.delete(`/roles/${roleId}`);
+                // console.log(res);
+                alert(data.message);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }
