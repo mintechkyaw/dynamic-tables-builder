@@ -1,5 +1,5 @@
 import api from "../../api/axios";
-
+import { updateAbility } from "../../services/ability";
 export default {
     state: {
         user: null,
@@ -41,7 +41,13 @@ export default {
         async authUserApi({ commit }) {
             try {
                 const { data } = await api.get("/user");
-                commit("setAuthUser", data.data);
+                const user = data.data;
+                commit("setAuthUser", user);
+                if(user.permissions){
+                    updateAbility(user.permissions);
+                }else{
+                    updateAbility([]);
+                }
             } catch (e) {
                 console.error("Login error:", e.message);
             }

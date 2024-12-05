@@ -19,7 +19,7 @@
             <v-tab to="/role" prepend-icon="fa-solid fa-handcuffs">
                 Role
             </v-tab>
-            <v-tab to="/forms" prepend-icon="fa-brands fa-wpforms">
+            <v-tab v-if="$can('form','create')" to="/forms" prepend-icon="fa-brands fa-wpforms">
                 Forms
             </v-tab>
             <v-tab to="/tables" prepend-icon="fa-solid fa-database">
@@ -54,6 +54,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex';
+import ability from '../../services/ability';
 
 export default {
     data() {
@@ -71,6 +72,9 @@ export default {
     },
     computed: {
         ...mapGetters(["authUser"]),
+        $can(){
+            return ability.can.bind(ability);
+        }
     },
     async created() {
         // this.fetchForms();

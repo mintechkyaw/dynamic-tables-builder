@@ -15,18 +15,20 @@ export default {
         },
     },
     actions: {
-        async fetchUsers({ commit }) {
+        async fetchUsers({ commit }, params) {
             try {
-                const res = await api.get("/users");
-                console.log(res);
+                const { data } = await api.get("/users",params);
+                // console.log(data);
+                commit("setUsers", data.data);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }
         },
         async createUser({ commit }, user) {
             try {
-                const res = await api.post("/users", user);
-                console.log(res);
+                const { data } = await api.post("/users", user);
+                // console.log(res);
+                alert(data.message);
             } catch (e) {
                 throw new Error(e.response?.data?.message);
             }
