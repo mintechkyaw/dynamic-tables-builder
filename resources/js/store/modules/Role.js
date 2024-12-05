@@ -3,15 +3,22 @@ import api from "../../api/axios";
 export default {
     state: {
         roles: null,
+        permissions: null,
     },
     getters: {
         getRoles(state) {
             return state.roles;
         },
+        getPermissions(state) {
+            return state.permissions;
+        },
     },
     mutations: {
         setRoles(state, roles) {
             state.roles = roles;
+        },
+        setPermissions(state, permissions) {
+            state.permissions = permissions;
         },
     },
     actions: {
@@ -44,5 +51,13 @@ export default {
                 throw new Error(e.response?.data?.message);
             }
         },
+        async fetchPermissions({commit}){
+            try {
+                const { data } = await api.get('/permissions');
+                commit("setPermissions",data.data);
+            } catch (e) {
+                throw new Error(e.response?.data?.message);
+            }
+        }
     },
 };
