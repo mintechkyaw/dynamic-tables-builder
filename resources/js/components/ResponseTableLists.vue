@@ -84,6 +84,7 @@ export default {
         async exportToExcel() {
             try {
                 const id = this.$route.params.id;
+                this.loading = true;
 
                 const response = await axios.get(`/api/forms/${id}/export`, {
                     headers: {
@@ -107,6 +108,8 @@ export default {
                 console.error('Export failed:', error);
                 // Use alert box
                 alert('Export failed: ' + error.message);
+            } finally {
+                this.loading = false;
             }
         }
     },
