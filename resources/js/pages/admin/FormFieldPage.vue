@@ -53,7 +53,7 @@
                             <td>{{ field.column_name }}</td>
                             <td>{{ field.data_type }}</td>
                             <td>{{field.type}}</td>
-                            <td><v-chip color="primary" variant="flat" class="me-1" v-for="option in field.options">{{ option }}</v-chip> </td>
+                            <td><v-chip color="primary" variant="flat" class="me-1" v-for="option in field.options" :key="option.id">{{ option }}</v-chip> </td>
                             <td>
                                 <v-btn @click="deleteFieldBtn(field.id)" size="x-small" color="danger" icon="fa-regular fa-trash-can"></v-btn>
                             </td>
@@ -71,6 +71,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex';
+import ability from '../../services/ability';
 
 export default {
     data() {
@@ -150,6 +151,9 @@ export default {
             await this.submitFormToDatabase(id);
             this.publishBtn = false;
             this.$router.push("/forms");
+        },
+        $can(){
+            return ability.can.bind(ability);
         }
     },
 }

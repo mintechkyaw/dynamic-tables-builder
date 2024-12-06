@@ -1,13 +1,13 @@
 <template>
 <v-container fluid>
     <h2>User Lists</h2>
-    <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems" :items-length="totalItems" :loading="loading" :search="search" item-value="name" @update:options="loadItems">
+    <v-data-table-server v-show="$can('read', 'user')" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems" :items-length="totalItems" :loading="loading" :search="search" item-value="name" @update:options="loadItems">
         <template v-slot:[`item.permissions`]="{ item }">
         <span>{{ item.permissions.join(', ') }}</span>
       </template>
       <template v-slot:[`item.actions`]>
-        <v-btn size="x-small" color="primary" small>Edit</v-btn>
-        <v-btn size="x-small" color="red" small>Delete</v-btn>
+        <v-btn v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
+        <v-btn v-if="$can('delete','user')" size="x-small" color="red" small>Delete</v-btn>
       </template>
     </v-data-table-server>
 </v-container>
@@ -19,6 +19,7 @@ import {
     mapGetters
 } from 'vuex';
 import api from '../../api/axios';
+import ability from '../../services/ability';
 
 export default {
     data: () => ({
@@ -96,6 +97,9 @@ export default {
             } finally {
                 this.loading = false;
             }
+        },
+        $can(){
+            return ability.can.bind(ability);
         }
     },
     created() {
