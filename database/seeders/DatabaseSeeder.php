@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $role = Role::create([
             'name' => 'superAdmin',
         ]);
-        $predefinedPermissions = ['manage-all', 'form-create', 'form-read', 'form-update', 'form-delete', 'user-create', 'user-read', 'user-update', 'user-delete'];
+        $predefinedPermissions = ['manage-all', 'create-form', 'read-form', 'update-form', 'delete-form', 'create-user', 'read-user', 'update-user', 'delete-user'];
         foreach ($predefinedPermissions as $p) {
             Permission::create(['name' => $p]);
         }

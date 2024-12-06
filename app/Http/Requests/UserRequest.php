@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest
 {
@@ -29,7 +28,7 @@ class UserRequest extends FormRequest
                 'role_id' => 'required|string|exists:roles,id',
                 'permissions' => 'required|array',
                 'permissions.*' => 'required|exists:permissions,id',
-                'password' => ['required', Password::defaults()],
+                'password' => ['required', 'min:6', 'max:30'],
             ];
         }
 
