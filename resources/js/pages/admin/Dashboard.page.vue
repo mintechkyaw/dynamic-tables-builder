@@ -16,7 +16,7 @@
             <v-tab v-if="$can('create','user')" to="/user-create" prepend-icon="fa-solid fa-user-plus">
                 Create User
             </v-tab>
-            <v-tab v-if="$can('manage','all')" to="/role" prepend-icon="fa-solid fa-handcuffs">
+            <v-tab v-if="$can('manage','all')" to="/role" prepend-icon="fa-solid fa-key">
                 Role
             </v-tab>
             <v-tab v-if="$can('create','form')" to="/forms" prepend-icon="fa-brands fa-wpforms">
