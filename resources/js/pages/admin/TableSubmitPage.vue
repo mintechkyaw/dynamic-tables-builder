@@ -1,14 +1,17 @@
 <template>
-  <v-container class="mx-auto"
-      color="secondary"
-      height="200"
-      max-width="700">
-    <!-- <router-link to="/tables" class="my-2">
-      <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small"
+  <v-container class="mx-auto" color="secondary" height="200" max-width="700">
+    <router-link to="/tables" class="my-2">
+      <v-btn prepend-icon="fa-regular fa-share-from-square" size="small"
         >Back</v-btn
       >
-    </router-link> -->
-    <v-alert v-if="successAlert" closable :text="successMessage" color="info" icon="$success"></v-alert>
+    </router-link>
+    <v-alert
+      v-if="successAlert"
+      closable
+      :text="successMessage"
+      color="info"
+      icon="$success"
+    ></v-alert>
     <v-skeleton-loader
       v-if="isLoading"
       type="list-item-two-line"
@@ -84,28 +87,28 @@
         </div>
       </div>
       <v-row class="d-flex align-center">
-  <!-- Save Button -->
-  <v-btn
-    @click="onSubmit"
-    variant="outlined"
-    :disabled="btnloading"
-    color="primary"
-    class="ms-3 my-2"
-    :loading="btnloading"
-  >
-    <template v-if="!btnloading">Save</template>
-    <template v-if="btnloading">
-      <v-progress-circular
-        class="mx-1"
-        color="primary"
-        indeterminate
-        size="24"
-      ></v-progress-circular>
-    </template>
-  </v-btn>
+        <!-- Save Button -->
+        <v-btn
+          @click="onSubmit"
+          variant="outlined"
+          :disabled="btnloading"
+          color="primary"
+          class="ms-3 my-2"
+          :loading="btnloading"
+        >
+          <template v-if="!btnloading">Save</template>
+          <template v-if="btnloading">
+            <v-progress-circular
+              class="mx-1"
+              color="primary"
+              indeterminate
+              size="24"
+            ></v-progress-circular>
+          </template>
+        </v-btn>
 
-  <!-- View Button -->
-</v-row>
+        <!-- View Button -->
+      </v-row>
     </v-form>
   </v-container>
 </template>
@@ -120,8 +123,8 @@ export default {
       datePickerVisible: false,
       isLoading: false,
       btnloading: false,
-      successMessage : '',
-      successAlert : false,
+      successMessage: "",
+      successAlert: false,
       formData: {},
       id: null,
       fields: [],
@@ -181,10 +184,9 @@ export default {
         console.error("Error submitting the form:", error);
       } finally {
         this.btnloading = false;
-        this.formData = {}
+        this.formData = {};
       }
     },
-
   },
   mounted() {
     this.isLoading = true;

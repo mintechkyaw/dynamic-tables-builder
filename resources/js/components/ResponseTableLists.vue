@@ -4,15 +4,16 @@
         <v-container class="mt-3">
             <div class="d-flex justify-space-between align-center">
                 <router-link to="/tables" class="my-2">
-                    <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small">Back</v-btn>
+                    <v-btn prepend-icon="fa-regular fa-share-from-square" size="small">Back</v-btn>
                 </router-link>
                 <v-btn
                     @click="exportToExcel"
                     :disabled="!hasData"
                    color="success"
-                    prepend-icon="fas fa-file-excel"
+
                     :loading="loading"
                 >
+                    <img class="mr-1" src="../../image/microsoft-excel-for-ipad-2014-05-02.png" alt="excel" width="20" height="20" />
                     Export
                 </v-btn>
             </div>
