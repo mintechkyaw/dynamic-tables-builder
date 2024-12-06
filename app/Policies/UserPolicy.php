@@ -11,7 +11,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('user-read');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('read-user');
     }
 
     /**
@@ -19,7 +19,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('user-read');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('read-user');
 
     }
 
@@ -28,7 +28,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('user-create');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('create-user');
 
     }
 
@@ -37,7 +37,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('user-update');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('update-user');
 
     }
 
@@ -46,7 +46,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('user-delete');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('delete-user');
 
     }
 }
