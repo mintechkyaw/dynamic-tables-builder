@@ -12,7 +12,7 @@ class FormPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('form-read');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('read-form');
     }
 
     /**
@@ -20,7 +20,7 @@ class FormPolicy
      */
     public function view(User $user, Form $form): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('form-read');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('read-form');
     }
 
     /**
@@ -28,7 +28,7 @@ class FormPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('form-create');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('create-form');
 
     }
 
@@ -37,7 +37,7 @@ class FormPolicy
      */
     public function update(User $user, Form $form): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('form-update');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('update-form');
 
     }
 
@@ -46,7 +46,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form): bool
     {
-        return $user->isSuperAdmin() || $user->hasPermissionTo('form-delete');
+        return $user->isSuperAdmin() || $user->hasPermissionTo('delete-form');
 
     }
 }

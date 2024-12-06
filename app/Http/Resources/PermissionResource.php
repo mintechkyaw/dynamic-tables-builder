@@ -18,7 +18,6 @@ class PermissionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'created_at' => $this->created_at,
-
         ];
     }
 }

@@ -18,8 +18,8 @@ class FormFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory(),
-            'name' => $this->faker->words(3, true),
-            'slug' => $this->faker->unique()->slug(2),
+            'name' => $this->faker->unique()->words(asText: true),
+            'slug' => $this->faker->unique()->words(asText: true),
             'status' => 'drafted',
         ];
     }

@@ -7,6 +7,8 @@ use App\Http\Requests\FormStoreRequest;
 use App\Http\Resources\FormResource;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Log;
+use Throwable;
 
 class FormController extends Controller
 {
@@ -49,8 +51,8 @@ class FormController extends Controller
                 ],
                 201
             );
-        } catch (\Throwable $th) {
-            \Log::error("Error in Creating Form: {$th->getMessage()}", [
+        } catch (Throwable $th) {
+            Log::error("Error in Creating Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }
@@ -80,9 +82,9 @@ class FormController extends Controller
 
             return response()->json([
                 'message' => 'Form Name Updated Successfully!',
-            ], 200);
-        } catch (\Throwable $th) {
-            \Log::error("Error in Updating Form: {$th->getMessage()}", [
+            ]);
+        } catch (Throwable $th) {
+            Log::error("Error in Updating Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }
@@ -105,8 +107,8 @@ class FormController extends Controller
                 'message' => 'Form Deleted Successfully!',
             ]);
 
-        } catch (\Throwable $th) {
-            \Log::error("Error in Deleting Form: {$th->getMessage()}", [
+        } catch (Throwable $th) {
+            Log::error("Error in Deleting Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }
