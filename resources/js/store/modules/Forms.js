@@ -115,7 +115,7 @@ export default {
                     `/forms/${formData.id}/submit`,
                     formData
                 );
-            } catch (error) {
+            } catch (e) {
                 alert(e.response?.data?.message);
                 throw new Error(e.response?.data?.message);
             }

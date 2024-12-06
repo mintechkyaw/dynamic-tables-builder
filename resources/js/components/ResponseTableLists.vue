@@ -1,11 +1,21 @@
+
 <template>
     <v-app>
         <v-container class="mt-3">
-            <router-link to="/tables" class="my-2">
-                <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small"
-                    >Back</v-btn
+            <div class="d-flex justify-space-between align-center">
+                <router-link to="/tables" class="my-2">
+                    <v-btn prepend-icon="fa-solid fa-arrow-left-long" size="small">Back</v-btn>
+                </router-link>
+                <v-btn
+                    @click="exportToExcel"
+                    :disabled="!hasData"
+                   color="success"
+                    prepend-icon="fas fa-file-excel"
+                    :loading="loading"
                 >
-            </router-link>
+                    Export
+                </v-btn>
+            </div>
             <v-data-table-server
                 class="mt-6"
                 :items="transformedData"
@@ -14,18 +24,6 @@
                 :loading="loading"
             >
             </v-data-table-server>
-            <button
-                @click="exportToExcel"
-                :disabled="!hasData"
-                :class="[
-                    'px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50',
-                    hasData
-                        ? 'bg-green-500 text-white hover:bg-green-600'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                ]"
-            >
-                Export to Excel
-            </button>
         </v-container>
     </v-app>
 </template>
