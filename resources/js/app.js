@@ -10,6 +10,7 @@ import * as directives from "vuetify/directives";
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import store from './store';
 import { abilitiesPlugin } from '@casl/vue';
+import '@mdi/font/css/materialdesignicons.css'
 import ability from './services/ability';
 
 const vuetify = createVuetify({
