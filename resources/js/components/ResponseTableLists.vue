@@ -68,7 +68,7 @@ export default {
             page = 1,
             itemsPerPage = 10,
         } = {}) {
-            const id = this.$route.params.id;
+            const id = parseInt(this.$route.params.id);
             this.loading = true;
             try {
                 await this.$store.dispatch("fetchResponseTables", {
@@ -84,7 +84,7 @@ export default {
         },
         async exportToExcel() {
             try {
-                const id = this.$route.params.id;
+                const id = parseInt(this.$route.params.id);
                 this.loading = true;
 
                 const response = await axios.get(`/api/forms/${id}/export`, {

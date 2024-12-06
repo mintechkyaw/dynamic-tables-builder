@@ -19,7 +19,7 @@
             >
                 <template v-slot:body="{ items }">
                     <tr v-for="item in items" :key="item.id">
-                        <!-- <td>{{ item.id }}</td> -->
+                        <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td class="text-success">{{ item.status }}</td>
                         <td>
@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             headers: [
-                // { title: "ID", value: "id" },
+                { title: "ID", value: "id", sortable: false },
                 { title: "Name", value: "name" },
                 { title: "Status", value: "status" },
                 { title: "Actions", value: "actions", sortable: false },

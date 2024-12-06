@@ -1,6 +1,7 @@
 <template>
   <v-layout>
     <v-navigation-drawer v-model="drawer">
+<<<<<<< HEAD
       <v-list>
         <v-list-item>
           <h3>Dynamite App</h3>
@@ -28,6 +29,36 @@
           Logout
         </v-tab>
       </v-tabs>
+=======
+        <v-list>
+            <v-list-item>
+                <h3>Dynamite App</h3>
+            </v-list-item>
+        </v-list>
+        <v-tabs direction="vertical">
+            <v-tab to="/" prepend-icon="fa-solid fa-house">
+                Home
+            </v-tab>
+            <v-tab v-if="$can('read','user')" to="/user-list" prepend-icon="fa-solid fa-users">
+                Users
+            </v-tab>
+            <v-tab v-if="$can('create','user')" to="/user-create" prepend-icon="fa-solid fa-user-plus">
+                Create User
+            </v-tab>
+            <v-tab v-if="$can('manage','all')" to="/role" prepend-icon="fa-solid fa-handcuffs">
+                Role
+            </v-tab>
+            <v-tab v-if="$can('create','form')" to="/forms" prepend-icon="fa-brands fa-wpforms">
+                Forms
+            </v-tab>
+            <v-tab to="/tables" prepend-icon="fa-solid fa-database">
+                Tables
+            </v-tab>
+            <v-tab @click="logout" prepend-icon="fa-solid fa-arrow-right-from-bracket">
+                Logout
+            </v-tab>
+        </v-tabs>
+>>>>>>> 64042ada88f0051c13390dde55d548ca00306270
     </v-navigation-drawer>
 
     <v-app-bar color="primary" prominent>

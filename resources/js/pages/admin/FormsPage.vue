@@ -6,12 +6,12 @@
         </v-text-field>
         <v-text-field v-model="form.slug" :rules="rules" hide-details="auto" label="Slug" width="300" class="mb-1">
         </v-text-field>
-        <v-btn @click="submitBtn" append-icon="fa-solid fa-plus" :loading="isLoading" :disabled="isLoading" variant="outlined">Add</v-btn>
+        <v-btn v-if="$can('create','form')" @click="submitBtn" append-icon="fa-solid fa-plus" :loading="isLoading" :disabled="isLoading" variant="outlined">Add</v-btn>
     </div>
 
     <div>
         <h3>Table Lists</h3>
-        <v-table>
+        <v-table v-if="$can('read','form')">
             <thead>
                 <tr>
                     <th class="text-left">
@@ -46,7 +46,7 @@
                         </router-link>
                         <v-dialog v-model="dialog" v-if="form.status =='drafted'" max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
-                                <v-btn @click="editFormBtn(form.id)" v-bind="activatorProps" color="surface-variant" size="x-small" class="me-1" text="Edit" variant="flat"></v-btn>
+                                <v-btn v-if="$can('update','form')" @click="editFormBtn(form.id)" v-bind="activatorProps" color="surface-variant" size="x-small" class="me-1" text="Edit" variant="flat"></v-btn>
                             </template>
 
                             <template v-slot:default="{ isActive }">
@@ -61,7 +61,7 @@
                                 </v-card>
                             </template>
                         </v-dialog>
-                        <v-btn @click="delBtn(form.id)" :loading="loadingStates[form.id]" :disabled="loadingStates[form.id]" size="x-small" color="error">Delete</v-btn>
+                        <v-btn v-if="$can('delete','form')" @click="delBtn(form.id)" :loading="loadingStates[form.id]" :disabled="loadingStates[form.id]" size="x-small" color="error">Delete</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -75,6 +75,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex'
+import ability from '../../services/ability';
 export default {
     data: () => ({
         rules: [
@@ -91,9 +92,9 @@ export default {
         isLoading: false,
         delBtnLoading: false,
         loadingStates: {},
-        dialog :false,
-        isActive:{
-            value : false,
+        dialog: false,
+        isActive: {
+            value: false,
         }
     }),
     computed: {
@@ -151,12 +152,19 @@ export default {
                 this.updateFormBtnLoading = false;
             }
         },
-        closeDialog(){
+        closeDialog() {
             isActive.value = false;
+        },
+        $can() {
+            return ability.can.bind(ability);
         }
     },
-    mounted() {
-        this.fetchForms();
+    created() {
+        if (this.$can('read', 'form')) {
+            this.fetchForms();
+        } else {
+            console.warn('You do not have permission to read forms.');
+        }
     },
 }
 </script>

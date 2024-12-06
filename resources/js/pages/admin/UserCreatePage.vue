@@ -26,6 +26,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex'
+import ability from '../../services/ability';
 export default {
     data() {
         return {
@@ -65,7 +66,7 @@ export default {
                 this.createBtnLoading = false;
                 alert(error.message)
             }
-        }
+        },
     },
     mounted() {
         this.fetchPermissions();
