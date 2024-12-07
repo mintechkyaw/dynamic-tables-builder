@@ -22,7 +22,7 @@
             <v-tab v-if="$can('create','form')" to="/forms" prepend-icon="fa-brands fa-wpforms">
                 Forms
             </v-tab>
-            <v-tab to="/tables" prepend-icon="fa-solid fa-database">
+            <v-tab v-if="$can('read','form')" to="/tables" prepend-icon="fa-solid fa-database">
                 Tables
             </v-tab>
             <v-tab @click="logout" prepend-icon="fa-solid fa-arrow-right-from-bracket">

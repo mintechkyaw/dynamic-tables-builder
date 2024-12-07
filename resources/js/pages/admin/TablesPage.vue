@@ -23,10 +23,11 @@
                         <td>{{ item.name }}</td>
                         <td class="text-success">{{ item.status }}</td>
                         <td>
-                            <v-btn @click="responseTableLists(item.id)"
+                            <v-btn v-if="$can('read',item.slug)" @click="responseTableLists(item.id)"
                                 ><i class="fa-solid fa-eye"></i
                             ></v-btn>
                             <v-btn
+                                    v-if="$can('create',item.slug)"
                                 class="ms-2"
                                 @click="
                                    SubmitTable(item.id)

@@ -1,12 +1,12 @@
 <template>
 <v-container>
-    <div class=" mb-4">
+    <div class=" mb-4" v-if="$can('create','form')">
         <h3 class="mb-2">Create Table</h3>
         <v-text-field v-model="form.formName" :rules="rules" hide-details="auto" label="Table Name" width="300" class="mb-1">
         </v-text-field>
         <v-text-field v-model="form.slug" :rules="rules" hide-details="auto" label="Slug" width="300" class="mb-1">
         </v-text-field>
-        <v-btn v-if="$can('create','form')" @click="submitBtn" append-icon="fa-solid fa-plus" :loading="isLoading" :disabled="isLoading" variant="outlined">Add</v-btn>
+        <v-btn @click="submitBtn" append-icon="fa-solid fa-plus" :loading="isLoading" :disabled="isLoading" variant="outlined">Add</v-btn>
     </div>
 
     <div>
@@ -41,7 +41,7 @@
                         <span v-else class="text-green-lighten-1">{{ form.status }}</span>
                     </td>
                     <td>
-                        <router-link :to="`/form_field/${form.id}`">
+                        <router-link v-if="$can('update','form')" :to="`/form_field/${form.id}`">
                             <v-btn v-if="form.status =='drafted'" size="x-small" color="info" class="me-1">Add Fields</v-btn>
                         </router-link>
                         <v-dialog v-model="dialog" v-if="form.status =='drafted'" max-width="500">
@@ -99,6 +99,9 @@ export default {
     }),
     computed: {
         ...mapGetters(["getForms", "getForm"]),
+        $can() {
+            return ability.can.bind(ability);
+        }
     },
     methods: {
         ...mapActions(["fetchForms", "createForm", "fetchFormById", "deleteForm", "updateForm"]),
@@ -155,9 +158,6 @@ export default {
         closeDialog() {
             isActive.value = false;
         },
-        $can() {
-            return ability.can.bind(ability);
-        }
     },
     created() {
         if (this.$can('read', 'form')) {
@@ -165,6 +165,10 @@ export default {
         } else {
             console.warn('You do not have permission to read forms.');
         }
+        console.log(ability.can('create','form'));
+        console.log(ability.can('read','form'));
+        console.log(ability.can('update','form'));
+        console.log(ability.can('delete','form'));
     },
 }
 </script>

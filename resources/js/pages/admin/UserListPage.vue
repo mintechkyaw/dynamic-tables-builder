@@ -1,14 +1,14 @@
 <template>
 <v-container fluid>
     <h2>User Lists</h2>
-    <v-data-table-server v-show="$can('read', 'user')" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems" :items-length="totalItems" :loading="loading" :search="search" item-value="name" @update:options="loadItems">
+    <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems" :items-length="totalItems" :loading="loading" :search="search" item-value="name" @update:options="loadItems">
         <template v-slot:[`item.permissions`]="{ item }">
-        <span>{{ item.permissions.join(', ') }}</span>
-      </template>
-      <template v-slot:[`item.actions`]>
-        <v-btn v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
-        <v-btn v-if="$can('delete','user')" size="x-small" color="red" small>Delete</v-btn>
-      </template>
+            <span>{{ item.permissions.join(', ') }}</span>
+        </template>
+        <template v-slot:[`item.actions`]>
+            <v-btn v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
+            <v-btn v-if="$can('delete','user')" size="x-small" color="red" small>Delete</v-btn>
+        </template>
     </v-data-table-server>
 </v-container>
 </template>
@@ -27,7 +27,7 @@ export default {
         headers: [{
                 title: 'UID',
                 align: 'start',
-                key:"id"
+                key: "id"
             },
             {
                 title: 'Name',
@@ -37,17 +37,17 @@ export default {
             {
                 title: 'Email',
                 align: 'end',
-                key:"email",
+                key: "email",
             },
             {
-                title : "Role",
+                title: "Role",
                 align: "End",
-                key:"role",
+                key: "role",
             },
             {
                 title: 'Permissions',
                 align: 'end',
-                key : "permissions",
+                key: "permissions",
             },
             {
                 title: 'Created at',
@@ -62,7 +62,7 @@ export default {
             {
                 title: 'Actions',
                 align: 'end',
-                key:"actions"
+                key: "actions"
             },
         ],
         search: '',
@@ -72,6 +72,9 @@ export default {
     }),
     computed: {
         ...mapGetters(["getUsers"]),
+        $can() {
+            return ability.can.bind(ability);
+        },
     },
     methods: {
         ...mapActions(["fetchUsers"]),
@@ -98,15 +101,14 @@ export default {
                 this.loading = false;
             }
         },
-        $can(){
-            return ability.can.bind(ability);
-        }
     },
     created() {
         this.loadItems({
             page: 1,
             itemsPerPage: this.itemsPerPage
         });
+        // console.log("Can update user:", ability.can('update', 'user'));
+        // console.log("Can delete user:", ability.can('delete', 'user'));
     },
 }
 </script>
