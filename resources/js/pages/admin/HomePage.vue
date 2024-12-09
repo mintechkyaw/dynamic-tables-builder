@@ -39,15 +39,24 @@ import {
     mapActions,
     mapGetters
 } from 'vuex'
+import ability from '../../services/ability';
 export default {
     computed: {
         ...mapGetters(["getForms"]),
+        $can() {
+            return ability.can.bind(ability);
+        }
     },
     methods: {
         ...mapActions(["fetchForms"])
     },
-    mounted() {
-        this.fetchForms();
+    mounted () {
+        if (this.$can('read', 'form') || this.$can('manage','all')) {
+            this.fetchForms();
+        } else {
+            console.warn('You do not have permission to read forms.');
+        }
+        console.log(ability.can('read','form'));
     },
 }
 </script>

@@ -7,7 +7,7 @@
             </v-list-item>
         </v-list>
         <v-tabs direction="vertical">
-            <v-tab to="/" prepend-icon="fa-solid fa-house">
+            <v-tab v-if="$can('read','form')" to="/" prepend-icon="fa-solid fa-house">
                 Home
             </v-tab>
             <v-tab v-if="$can('read','user')" to="/user-list" prepend-icon="fa-solid fa-users">
@@ -19,7 +19,7 @@
             <v-tab v-if="$can('manage','all')" to="/role" prepend-icon="fa-solid fa-key">
                 Role
             </v-tab>
-            <v-tab v-if="$can('create','form')" to="/forms" prepend-icon="fa-brands fa-wpforms">
+            <v-tab v-if="$can('read','form')" to="/forms" prepend-icon="fa-brands fa-wpforms">
                 Forms
             </v-tab>
             <v-tab v-if="$can('read','form')" to="/tables" prepend-icon="fa-solid fa-database">
@@ -69,7 +69,7 @@ export default {
       this.$store.commit("clearUser");
       this.$router.push("/login");
     },
-    ...mapActions(["fetchForms", "authUserApi"]),
+    ...mapActions([ "authUserApi"]),
   },
   computed: {
     ...mapGetters(["authUser"]),

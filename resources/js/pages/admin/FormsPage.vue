@@ -165,10 +165,6 @@ export default {
         } else {
             console.warn('You do not have permission to read forms.');
         }
-        console.log(ability.can('create','form'));
-        console.log(ability.can('read','form'));
-        console.log(ability.can('update','form'));
-        console.log(ability.can('delete','form'));
     },
 }
 </script>
