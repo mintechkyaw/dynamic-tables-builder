@@ -5,8 +5,8 @@
         <template v-slot:[`item.permissions`]="{ item }">
             <span>{{ item.permissions.join(', ') }}</span>
         </template>
-        <template v-slot:[`item.actions`]>
-            <v-btn v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
+        <template v-slot:[`item.actions`]="{ item }">
+            <v-btn :to="`/edit-user/${item.id}`" v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
             <v-btn v-if="$can('delete','user')" size="x-small" color="red" small>Delete</v-btn>
         </template>
     </v-data-table-server>
