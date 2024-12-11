@@ -14,6 +14,21 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        if ($request->routeIs('users.show')) {
+            return [
+                'id' => $this->id,
+                'name' => $this->name,
+                'email' => $this->email,
+                'role' => $this?->role?->name,
+                'permissions' => $this->permissions->map(fn ($p) => [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                ]),
+                'registered_at' => $this->created_at,
+                'profile_updated_at' => $this->updated_at,
+            ];
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,

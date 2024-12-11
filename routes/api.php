@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Forms\DynamicFormController;
 use App\Http\Controllers\Forms\FormController;
 use App\Http\Controllers\Forms\FormFieldController;
+use App\Http\Controllers\Stats\StatsController;
 use App\Http\Controllers\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,4 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
     /*Access Control Routes*/
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('permissions', PermissionController::class)->only(['index', 'show']);
+
+    /* Stats Routes */
 });
+
+Route::get('/stats', [StatsController::class, 'index']);
