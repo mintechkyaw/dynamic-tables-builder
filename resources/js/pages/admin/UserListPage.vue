@@ -7,7 +7,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
             <v-btn :to="`/edit-user/${item.id}`" v-if="$can('update','user')" size="x-small" color="primary" small>Edit</v-btn>
-            <v-btn v-if="$can('delete','user')" size="x-small" color="red" small>Delete</v-btn>
+            <v-btn v-if="$can('delete','user')" @click="deleteUserBtn(item.id)" size="x-small" color="red" small>Delete</v-btn>
         </template>
     </v-data-table-server>
 </v-container>
@@ -77,7 +77,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["fetchUsers"]),
+        ...mapActions(["fetchUsers","deleteUser"]),
         async loadItems({
             page,
             itemsPerPage
@@ -101,6 +101,13 @@ export default {
                 this.loading = false;
             }
         },
+        async deleteUserBtn(id){
+            const confirmed = confirm("Are u sure want to delete this user?.")
+            if(confirmed) {
+                await this.deleteUser(id);
+                this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage });
+            }
+        }
     },
     created() {
         this.loadItems({
