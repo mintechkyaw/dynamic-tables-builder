@@ -7,7 +7,7 @@
             </v-list-item>
         </v-list>
         <v-tabs direction="vertical">
-            <v-tab v-if="$can('read','form')" to="/" prepend-icon="fa-solid fa-house">
+            <v-tab to="/" prepend-icon="fa-solid fa-house">
                 Home
             </v-tab>
             <v-tab v-if="$can('read','user')" to="/user-list" prepend-icon="fa-solid fa-users">

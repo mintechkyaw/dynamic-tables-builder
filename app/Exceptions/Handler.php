@@ -58,18 +58,22 @@ class Handler extends ExceptionHandler
             \Log::error("Error in Finding Model: {$e->getMessage()}", [
                 'exception' => $e,
             ]);
-            if ($request->expectsJson()) return response()->json([
-                'error' => 'Requested Model Not Found',
-            ], 404);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'Requested Model Not Found',
+                ], 404);
+            }
         });
 
         $this->renderable(function (AccessDeniedHttpException $e, $request) {
             \Log::error("Error in Accessing Model: {$e->getMessage()}", [
                 'exception' => $e,
             ]);
-            if ($request->expectsJson()) return response()->json([
-                'error' => 'You don\'t have access to perform this action!',
-            ], 401);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'You don\'t have access to perform this action!',
+                ], 401);
+            }
         });
     }
 }

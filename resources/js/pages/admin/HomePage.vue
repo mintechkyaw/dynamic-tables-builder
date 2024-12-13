@@ -1,36 +1,17 @@
 <template>
 <v-container fluid>
-    <h2>Table Lists</h2>
-    <v-table>
-        <thead>
-            <tr>
-                <th class="text-left">
-                    Name
-                </th>
-                <th class="text-left">
-                    Slug
-                </th>
-                <th class="text-left">
-                    Status
-                </th>
-                <th class="text-left">
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="form in getForms" :key="form.id">
-                <td>{{ form.name }}</td>
-                <td>{{ form.slug }}</td>
-                <td>{{ form.status }}</td>
-                <td>
-                    <router-link :to="`/details/${form.id}`">
-                        <v-btn size="x-small" color="success" class="me-1">View</v-btn>
-                    </router-link>
-                </td>
-            </tr>
-        </tbody>
-    </v-table>
+    <v-row>
+        <v-col cols="4">
+            <v-card variant="outlined" style="height: 150px" class="text-center">
+                <h3 class=" align-center">Users - 4</h3>
+            </v-card>
+        </v-col>
+        <v-col cols="4">
+            <v-card variant="outlined" style="height: 150px" class="text-center">
+                <h3 class=" align-center">Tables - 4</h3>
+            </v-card>
+        </v-col>
+    </v-row>
 </v-container>
 </template>
 
@@ -50,14 +31,7 @@ export default {
     methods: {
         ...mapActions(["fetchForms"])
     },
-    mounted () {
-        if (this.$can('read', 'form') || this.$can('manage','all')) {
-            this.fetchForms();
-        } else {
-            console.warn('You do not have permission to read forms.');
-        }
-        console.log(ability.can('read','form'));
-    },
+    mounted() {},
 }
 </script>
 

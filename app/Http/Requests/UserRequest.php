@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -34,7 +35,13 @@ class UserRequest extends FormRequest
 
         return [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email:rfc,dns|unique:users,email,except,'.$this->route('user'),
+            'email' => [
+                'sometimes',
+                'email:rfc,dns',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('email', $this->email);
+                })->ignore($this->route('user')->id),
+            ],
             'role_id' => 'sometimes|string|exists:roles,id',
             'permissions' => 'sometimes|array',
             'permissions.*' => 'required_if_accepted:permissions,|exists:permissions,id',

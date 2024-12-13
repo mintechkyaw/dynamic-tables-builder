@@ -15,10 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Form::factory()
-            ->has(\App\Models\FormField::factory()->count(10), 'fields')
-            ->count(3)
-            ->create();
+        // \App\Models\Form::factory()
+        //     ->has(\App\Models\FormField::factory()->count(10), 'fields')
+        //     ->count(3)
+        //     ->create();
         $role = Role::create([
             'name' => 'superAdmin',
         ]);

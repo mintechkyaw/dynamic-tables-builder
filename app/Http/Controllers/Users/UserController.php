@@ -36,7 +36,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user = User::create($data);
-        $user->permissions()->attach($data['permissions']);
+        $user->permissions()->sync($data['permissions']);
 
         return response()->json([
             'message' => 'User Created Successfully!',
@@ -59,7 +59,7 @@ class UserController extends Controller
         $data = $request->validated();
         $user->update($data);
         if (! empty($data['permissions'])) {
-            $user->permissions()->attach($data['permissions']);
+            $user->permissions()->sync($data['permissions']);
         }
 
         return response()->json([

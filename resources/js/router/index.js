@@ -11,6 +11,7 @@ import ResponseTableLists from "../components/ResponseTableLists.vue";
 import UserCreatePage from "../pages/admin/UserCreatePage.vue";
 import UserListPage from "../pages/admin/UserListPage.vue";
 import RolePage from "../pages/admin/RolePage.vue";
+import EditUserPage from "../pages/admin/EditUserPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -74,6 +75,11 @@ const router = createRouter({
                     name : "RolePage",
                     path : "/role",
                     component : RolePage
+                },
+                {
+                    path: "/edit-user/:id",
+                    name: "EditUserPage",
+                    component: EditUserPage,
                 }
             ],
         },
