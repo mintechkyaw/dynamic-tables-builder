@@ -9,11 +9,15 @@ use App\Models\Form;
 use Illuminate\Http\Request;
 use Log;
 use Throwable;
+use App\Services\Forms\DynamicFormService;
 
 class FormController extends Controller
 {
-    public function __construct()
+    private $dynamicFormService;
+
+    public function __construct(DynamicFormService $dynamicFormService)
     {
+        $this->dynamicFormService = $dynamicFormService;
         $this->authorizeResource(Form::class, 'form');
     }
 
@@ -100,7 +104,7 @@ class FormController extends Controller
     public function destroy(Form $form)
     {
         try {
-            DynamicFormController::destroyDynamicForm($form);
+            $this->dynamicFormService->destroyDynamicForm($form);
             $form->delete();
 
             return response()->json([

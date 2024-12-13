@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DynamicTableExport;
 use App\Http\Controllers\AccessControl\PermissionController;
 use Artisan;
+use App\Models\Permission;
 
 
 
@@ -191,7 +192,7 @@ class DynamicFormService
             }
         }
         try {
-            if ($form->slug === 'published') {
+            if ($form->status === 'published') {
                 PermissionController::deletePermissions($form);
             }
         } catch (\Exception $e) {
@@ -204,6 +205,17 @@ class DynamicFormService
             logger()->error("Failed to drop table: {$tableName}. Error: {$e->getMessage()}");
         }
     }
+
+    // private function deletePermissions(Form $form)
+    // {
+    //     $permissions = ["create-$form->slug", "read-$form->slug", "update-$form->slug", "delete-$form->slug"];
+    //     foreach ($permissions as $p) {
+    //         $permission = Permission::where('name', $p)->first();
+    //         if ($permission) {
+    //             $permission->delete();
+    //         }
+    //     }
+    // }
 
     public function getDataFromDynamicTable(Form $form, Request $request)
     {
