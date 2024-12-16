@@ -2,23 +2,20 @@
 
 namespace App\Services\Forms;
 
+use App\Exports\DynamicTableExport;
+use App\Http\Controllers\AccessControl\PermissionController;
 use App\Models\Form;
+use Artisan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\DynamicTableExport;
-use App\Http\Controllers\AccessControl\PermissionController;
-use Artisan;
-use App\Models\Permission;
-
-
 
 class DynamicFormService
 {
-    public function publish(Form $form)
+    public function publish(Form $form): \Illuminate\Http\JsonResponse
     {
         if ($form->status === 'published') {
             return response()->json(['error' => 'Form is already published'], 400);
@@ -101,10 +98,9 @@ class DynamicFormService
         })->implode("\n            ");
     }
 
-    private function getFieldType($dataType)
+    private function getFieldType($dataType): string
     {
         return match ($dataType) {
-            'string' => 'string',
             'integer' => 'integer',
             'json' => 'json',
             'enum' => 'enum',
@@ -113,7 +109,7 @@ class DynamicFormService
         };
     }
 
-    public function insertDataIntoDynamicTable(Form $form, Request $request)
+    public function insertDataIntoDynamicTable(Form $form, Request $request): \Illuminate\Http\JsonResponse
     {
         if ($form->status !== 'published') {
             return response()->json(['error' => 'Form is not published'], 400);
