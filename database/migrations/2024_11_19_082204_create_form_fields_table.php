@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('form_fields', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('form_id')->constrained()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('form_id')->constrained('forms')->cascadeOnDelete();
             $table->string('column_name');
             $table->enum('data_type', ['string', 'integer', 'json', 'enum', 'date']);
             $table->enum('type', ['text', 'number', 'check_box', 'radio', 'calendar']);
-            $table->json('options');
+            $table->json('options')->nullable();
             $table->boolean('required')->default(false);
             $table->timestamps();
+
             $table->unique(['form_id', 'column_name']);
         });
     }

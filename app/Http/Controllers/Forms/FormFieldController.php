@@ -9,6 +9,11 @@ use App\Models\FormField;
 
 class FormFieldController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(FormField::class, 'form_field');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,32 +29,13 @@ class FormFieldController extends Controller
      */
     public function store(FormFieldRequest $request)
     {
-        $data = $request->validated();
-        switch ($data['type']) {
-            case 'text':
-                $data['data_type'] = 'string';
-                break;
-            case 'number':
-                $data['data_type'] = 'integer';
-                break;
-            case 'check_box':
-                $data['data_type'] = 'json';
-                break;
-            case 'radio':
-                $data['data_type'] = 'enum';
-                break;
-            default:
-                break;
-        }
-        $data['options'] = isset($data['options']) &&
-            ($data['type'] === 'check_box' || $data['type'] === 'radio')
-            ? json_encode($data['options']) : null;
+        $data = $this->getData($request);
         try {
             FormField::create($data);
 
             return response()->json(
                 [
-                    'msg' => 'Field Created Successfully!',
+                    'message' => 'Field Created Successfully!',
                 ],
                 201
             );
@@ -78,31 +64,12 @@ class FormFieldController extends Controller
     public function update(FormFieldRequest $request, FormField $formField)
     {
         if ($formField->form->status === 'drafted') {
-            $data = $request->validated();
-            switch ($data['type']) {
-                case 'text':
-                    $data['data_type'] = 'string';
-                    break;
-                case 'number':
-                    $data['data_type'] = 'integer';
-                    break;
-                case 'check_box':
-                    $data['data_type'] = 'json';
-                    break;
-                case 'radio':
-                    $data['data_type'] = 'enum';
-                    break;
-                default:
-                    break;
-            }
-            $data['options'] = isset($data['options']) &&
-                ($data['type'] === 'check_box' || $data['type'] === 'radio')
-                ? json_encode($data['options']) : null;
+            $data = $this->getData($request);
             try {
                 $formField->update($data);
 
                 return response()->json([
-                    'msg' => 'Form Field Updated!',
+                    'message' => 'Form Field Updated!',
                 ], 202);
             } catch (\Throwable $th) {
                 \Log::error("Error in Updating Form: {$th->getMessage()}", [
@@ -129,7 +96,7 @@ class FormFieldController extends Controller
             $formField->delete();
 
             return response()->json([
-                'msg' => 'Form Deleted Successfully!',
+                'message' => 'Form Deleted Successfully!',
             ]);
         } catch (\Throwable $th) {
             \Log::error("Error in Deleting Form Field: {$th->getMessage()}", [
@@ -140,5 +107,27 @@ class FormFieldController extends Controller
         return response()->json([
             'error' => true,
         ], 500);
+    }
+
+    private function dataTypeChanger($type)
+    {
+        return match ($type) {
+            'text' => 'string',
+            'number' => 'integer',
+            'check_box' => 'json',
+            'radio' => 'enum',
+            'calendar' => 'date'
+        };
+    }
+
+    private function getData(FormFieldRequest $request): mixed
+    {
+        $data = $request->validated();
+        $data['data_type'] = $this->dataTypeChanger($data['type']);
+        $data['options'] = isset($data['options']) &&
+        ($data['type'] === 'check_box' || $data['type'] === 'radio')
+            ? json_encode($data['options']) : null;
+
+        return $data;
     }
 }

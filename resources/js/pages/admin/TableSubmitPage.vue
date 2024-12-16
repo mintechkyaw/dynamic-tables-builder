@@ -1,134 +1,204 @@
 <template>
-    <v-app>
-      <v-container>
-        <!-- Form Title -->
-        <v-card class="pa-5">
-          <v-card-title class="text-h5">{{ formandfields?.name || "Form" }}</v-card-title>
-          <v-card-subtitle>{{ formandfields?.slug || "Dynamic Form" }}</v-card-subtitle>
-        </v-card>
+  <v-container class="mx-auto" color="secondary" height="200" max-width="700">
+    <router-link to="/tables" class="my-2">
+      <v-btn prepend-icon="fa-regular fa-share-from-square" size="small"
+        >Back</v-btn
+      >
+    </router-link>
+    <v-alert
+      v-if="successAlert"
+      closable
+      :text="successMessage"
+      color="info"
+      icon="$success"
+    ></v-alert>
+    <v-skeleton-loader
+      v-if="isLoading"
+      type="list-item-two-line"
+    ></v-skeleton-loader>
 
-        <!-- Form -->
-        <v-form ref="form" v-model="valid" class="mt-5">
-          <v-row>
-            <!-- Dynamic Fields -->
-            <v-col
-              v-for="field in formandfields"
-              :key="field.id"
-              cols="12"
-              sm="6"
-              md="4"
-              class="mb-4"
-            >
-              <!-- Render Fields Based on Type -->
-              <component
-                :is="getFieldComponent(field.type)"
-                v-model="formData[field.column_name]"
-                :label="field.column_name"
-                :options="field.options ? JSON.parse(field.options) : []"
-                :rules="[field.required ? rules.required : () => true]"
-                :type="field.data_type"
-                required
-              />
-            </v-col>
-          </v-row>
+    <v-list-item v-else lines="two" rounded></v-list-item>
+    <v-form v-model="valid" v-if="!isLoading">
+      <h4 class="mb-1">{{ getForm?.name }}</h4>
+      <div v-for="field in fields" :key="field.id" cols="12" md="6">
+        <div v-if="field.type === 'text'">
+          <v-text-field
+            v-model="formData[field.column_name]"
+            :label="field.column_name"
+            :rules="[field.required ? rules.required : () => true]"
+            clearable
+            outlined
+            color="primary"
+            class="w-full"
+          />
+        </div>
+        <div v-if="field.type === 'check_box'">
+          <v-select
+            v-model="formData[field.column_name]"
+            :items="field?.options"
+            item-value="value"
+            :rules="[field.required ? rules.required : () => true]"
+            item-text="label"
+            :label="field.column_name"
+            clearable
+            outlined
+            color="primary"
+            multiple
+          ></v-select>
+        </div>
 
-          <!-- Submit Button -->
-          <v-btn :disabled="!valid" color="primary" @click="submitForm">
-            Submit
-          </v-btn>
-        </v-form>
-      </v-container>
-    </v-app>
-  </template>
+        <div v-if="field.type === 'radio'">
+          <v-radio-group
+            v-model="formData[field.column_name]"
+            :label="field.column_name"
+            :rules="[field.required ? rules.required : () => true]"
+            color="primary"
+            class="w-full"
+          >
+            <v-radio
+              v-for="index in field.options"
+              :key="index"
+              :label="index"
+              :value="index"
+            />
+          </v-radio-group>
+        </div>
 
-  ---
+        <div v-if="field.type === 'calendar'" class="my-4">
+          <div>
+            <v-text-field
+              type="date"
+              v-model="formData[field.column_name]"
+              required
+            />
+          </div>
+        </div>
+        <div v-if="field.type === 'number'">
+          <v-text-field
+            v-model="formData[field.column_name]"
+            :label="field.column_name"
+            type="number"
+            :rules="[field.required ? rules.required : () => true]"
+            clearable
+            outlined
+            color="primary"
+            class="w-full"
+          ></v-text-field>
+        </div>
+      </div>
+      <v-row class="d-flex align-center">
+        <!-- Save Button -->
+        <v-btn
+          @click="onSubmit"
+          variant="outlined"
+          :disabled="btnloading"
+          color="primary"
+          class="ms-3 my-2"
+          :loading="btnloading"
+        >
+          <template v-if="!btnloading">Save</template>
+          <template v-if="btnloading">
+            <v-progress-circular
+              class="mx-1"
+              color="primary"
+              indeterminate
+              size="24"
+            ></v-progress-circular>
+          </template>
+        </v-btn>
 
-  ### Script Section
-  ```javascript
-  <script>
-  import { mapGetters } from "vuex/dist/vuex.cjs.js";
+        <!-- View Button -->
+      </v-row>
+    </v-form>
+  </v-container>
+</template>
 
-  export default {
-    data() {
-      return {
-        valid: false, // Form validation state
-        formData: {}, // Stores dynamic form values
-        rules: {
-          required: (value) => !!value || "This field is required.",
-          email: (value) =>
-            /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(value) ||
-            "Invalid email.",
-        },
-      };
-    },
-    computed: {
-      ...mapGetters(["formandfields"]),
-    },
-    watch: {
-      formandfields: {
-        handler(value) {
-          if (value?.form_fields) {
-            value.form_fields.forEach((field) => {
-              this.$set(this.formData, field.column_name, "");
-            });
-          }
-        },
-        immediate: true,
+<script>
+import { mapGetters } from "vuex";
+
+export default {
+  data() {
+    return {
+      valid: false,
+      datePickerVisible: false,
+      isLoading: false,
+      btnloading: false,
+      successMessage: "",
+      successAlert: false,
+      formData: {},
+      id: null,
+      fields: [],
+      rules: {
+        required: (value) => !!value || "This field is required.",
+        email: (value) =>
+          /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(value) ||
+          "Invalid email.",
       },
-    },
-    methods: {
-      getFieldComponent(type) {
-        const componentMap = {
-          text: "v-text-field",
-          radio: "v-radio-group",
-          check_box: "v-checkbox",
-          date: "v-date-picker",
-        };
-        return componentMap[type] || "v-text-field";
-      },
-      async submitForm() {
-        if (this.$refs.form.validate()) {
-          try {
-            const response = await fetch("https://example.com/api/submit", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(this.formData),
-            });
-            const result = await response.json();
-            alert("Form submitted successfully!");
-            console.log(result);
-          } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("An error occurred while submitting the form.");
-          }
+    };
+  },
+  computed: {
+    ...mapGetters(["getForm"]),
+  },
+  watch: {
+    getForm: {
+      handler(form) {
+        if (form?.form_fields) {
+          this.fields = form.form_fields.map((field) => ({
+            id: field.id,
+            column_name: field.column_name,
+            type: field.type,
+            options: field.options,
+            required: field.required == 1,
+            data_type: field.data_type,
+          }));
+
+          this.formData = {};
         }
       },
-      async fetchFormandFieldsData() {
-        console.log("Fetching form and fields data...");
-        const id = this.$route.params.id;
-        try {
-          await this.$store.dispatch("formandfields", id);
-        } catch (error) {
-          console.error("Error fetching form and fields data:", error);
-        }
-      },
+      immediate: true,
     },
-    mounted() {
-      this.fetchFormandFieldsData();
+  },
+  methods: {
+    parseOptions(options) {
+      try {
+        return options ? JSON.parse(options) : [];
+      } catch (e) {
+        console.error("Error parsing options:", e);
+        return [];
+      }
     },
-  };
-  </script>
 
-<!-- async formandfields({ commit }, id) {
-    try {
-        const res = await api.get(`/forms/${id}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("token"),
-            },
+    async onSubmit() {
+      try {
+        this.btnloading = true;
+        await this.$store.dispatch("submituserForm", {
+          ...this.formData,
+          id: this.getForm?.id,
+          status: this.getForm?.status,
+          slug: this.getForm?.slug,
         });
-        commit("SET_FORM_DATA", res.data); // Update formData with API response
-    } catch (error) {
-        console.error("Error fetching form data:", error);
-    }
-}, -->
+        this.successAlert = true;
+        this.successMessage = "Data inserted successfully";
+        alert(this.successMessage);
+      } catch (error) {
+        console.error("Error submitting the form:", error);
+      } finally {
+        this.btnloading = false;
+        this.formData = {};
+      }
+    },
+  },
+  mounted() {
+    this.isLoading = true;
+    this.$store
+      .dispatch("fetchFormById", this.$route.params.id)
+      .then(() => {
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.error("Error fetching form:", error);
+        this.isLoading = false;
+      });
+  },
+};
+</script>

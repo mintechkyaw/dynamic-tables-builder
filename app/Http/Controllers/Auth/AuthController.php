@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +16,7 @@ class AuthController extends Controller
         $validator = Validator::make(request()->all(), [
             'name' => ['required', 'min:4', 'max:40'],
             'email' => ['required', 'email', 'email:rfc,dns', 'unique:users,email'],
+            'role_id' => ['required', 'string', 'exists:roles,id'],
             'password' => ['required', 'min:6', 'max:30'],
         ]);
 
@@ -23,9 +26,11 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
         User::create([
             'name' => request('name'),
             'email' => request('email'),
+            'role_id' => request('role_id'),
             'password' => Hash::make(request('password')),
         ]);
 
@@ -37,7 +42,7 @@ class AuthController extends Controller
     public function login()
     {
         $validator = Validator::make(request()->all(), [
-            'email' => ['required', 'email', 'email:rfc,dns'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'min:6', 'max:30'],
         ]);
 
@@ -69,7 +74,33 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login Success.',
             'token' => $token,
-            'user' => $user,
+            'user' => new UserResource($user),
         ], 200);
+    }
+
+    public function logout()
+    {
+        request()->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout successful.',
+        ], 200);
+    }
+
+    public function authUserInfo()
+    {
+        $user = auth()->user();
+
+        return new UserResource($user);
+    }
+
+    public function updateUserInfo(ProfileUpdateRequest $request)
+    {
+        $data = $request->validated();
+        auth()->user()->update($data);
+
+        return response()->json([
+            'data' => 'You have successfully updated your profile.',
+        ], 201);
     }
 }

@@ -9,6 +9,9 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import store from './store';
+import { abilitiesPlugin } from '@casl/vue';
+import '@mdi/font/css/materialdesignicons.css'
+import ability from './services/ability';
 
 const vuetify = createVuetify({
     components,
@@ -29,4 +32,7 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 app.use(vuetify);
+app.use(abilitiesPlugin, ability,{
+    useGlobalProperties : true
+});
 app.mount("#app");

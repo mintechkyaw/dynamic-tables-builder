@@ -6,10 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStoreRequest;
 use App\Http\Resources\FormResource;
 use App\Models\Form;
+use App\Services\Forms\DynamicFormService;
 use Illuminate\Http\Request;
+use Log;
+use Throwable;
 
 class FormController extends Controller
 {
+    private $dynamicFormService;
+
+    public function __construct(DynamicFormService $dynamicFormService)
+    {
+        $this->dynamicFormService = $dynamicFormService;
+        $this->authorizeResource(Form::class, 'form');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -34,17 +45,18 @@ class FormController extends Controller
     {
         $data = $request->validated();
         try {
+            $data['status'] = 'drafted';
             $form = auth()->user()->forms()->create($data);
 
             return response()->json(
                 [
-                    'msg' => 'Form Created Successfully!',
+                    'message' => 'Form Created Successfully!',
                     'form' => new FormResource($form),
                 ],
                 201
             );
-        } catch (\Throwable $th) {
-            \Log::error("Error in Creating Form: {$th->getMessage()}", [
+        } catch (Throwable $th) {
+            Log::error("Error in Creating Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }
@@ -73,10 +85,10 @@ class FormController extends Controller
             $form->update($data);
 
             return response()->json([
-                'msg' => 'Form Name Updated Successfully!',
-            ], 200);
-        } catch (\Throwable $th) {
-            \Log::error("Error in Updating Form: {$th->getMessage()}", [
+                'message' => 'Form Name Updated Successfully!',
+            ]);
+        } catch (Throwable $th) {
+            Log::error("Error in Updating Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }
@@ -92,13 +104,15 @@ class FormController extends Controller
     public function destroy(Form $form)
     {
         try {
+            $this->dynamicFormService->destroyDynamicForm($form);
             $form->delete();
 
             return response()->json([
-                'msg' => 'Form Deleted Successfully!',
+                'message' => 'Form Deleted Successfully!',
             ]);
-        } catch (\Throwable $th) {
-            \Log::error("Error in Deleting Form: {$th->getMessage()}", [
+
+        } catch (Throwable $th) {
+            Log::error("Error in Deleting Form: {$th->getMessage()}", [
                 'exception' => $th,
             ]);
         }

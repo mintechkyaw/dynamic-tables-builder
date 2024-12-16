@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -61,6 +62,17 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'error' => 'Requested Model Not Found',
                 ], 404);
+            }
+        });
+
+        $this->renderable(function (AccessDeniedHttpException $e, $request) {
+            \Log::error("Error in Accessing Model: {$e->getMessage()}", [
+                'exception' => $e,
+            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'You don\'t have access to perform this action!',
+                ], 401);
             }
         });
     }

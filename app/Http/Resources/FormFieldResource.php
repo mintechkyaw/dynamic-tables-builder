@@ -19,7 +19,7 @@ class FormFieldResource extends JsonResource
             'column_name' => $this->column_name,
             'data_type' => $this->data_type,
             'type' => $this->type,
-            'options' => $this->options ?? null,
+            'options' => json_decode($this->options) ?? null,
             'required' => $this->required,
         ];
     }
