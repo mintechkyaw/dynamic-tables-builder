@@ -12,6 +12,8 @@ import UserCreatePage from "../pages/admin/UserCreatePage.vue";
 import UserListPage from "../pages/admin/UserListPage.vue";
 import RolePage from "../pages/admin/RolePage.vue";
 import EditUserPage from "../pages/admin/EditUserPage.vue";
+import ResponseFormsLists from "../components/ResponseFormsLists.vue";
+import TableSubmitPageReuse from "../components/TableSubmitPageReuse.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -60,6 +62,16 @@ const router = createRouter({
                     name:"ResponseTableLists",
                     path:"/responseTableLists/:id",
                     component: ResponseTableLists,
+                },
+                {
+                    name: "ResponseFormsLists",
+                    path: "/responseFormsLists",
+                    component: ResponseFormsLists,
+                },
+                {
+                    name : "TableSubmitReuse",
+                    path : "/table-submit-reuse/:id",
+                    component : TableSubmitPageReuse
                 },
                 {
                     name:"UserCreatePage",

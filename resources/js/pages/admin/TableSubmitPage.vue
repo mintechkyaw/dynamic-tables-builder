@@ -6,6 +6,7 @@
       >
     </router-link>
     <v-alert
+    class="my-2"
       v-if="successAlert"
       closable
       :text="successMessage"

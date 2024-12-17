@@ -25,6 +25,9 @@
             <v-tab v-if="$can('read','form')" to="/tables" prepend-icon="fa-solid fa-database">
                 Tables
             </v-tab>
+            <v-tab v-if="$can('read','form')" to="/responseFormsLists" prepend-icon="fa-solid fa-list">
+                Forms Lists
+            </v-tab>
             <v-tab @click="logout" prepend-icon="fa-solid fa-arrow-right-from-bracket">
                 Logout
             </v-tab>

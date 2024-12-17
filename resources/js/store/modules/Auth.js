@@ -44,7 +44,6 @@ export default {
                 const user = data.data;
                 commit("setAuthUser", user);
                 if(user.permissions){
-                    console.log(user);
                     updateAbility(user.permissions);
                 }else{
                     updateAbility([]);
