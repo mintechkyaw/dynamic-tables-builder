@@ -10,7 +10,7 @@
         color="info"
         icon="$success"
       ></v-alert>
-      <v-skeleton-loader v-if="isLoading" type="list-item-two-line"></v-skeleton-loader>
+      <v-skeleton-loader  class="mt-2" v-if="isLoading" type="card"></v-skeleton-loader>
 
       <div v-else>
         <div v-for="form in publishedForms" :key="form.id">

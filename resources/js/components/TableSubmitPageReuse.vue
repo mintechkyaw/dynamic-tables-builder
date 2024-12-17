@@ -3,7 +3,7 @@
       <!-- Card for the Form -->
       <v-card elevation="2" class="pa-4 mb-4">
         <v-card-title>
-          <h4 class="my-3 bg-primary px-2 py-4 rounded">{{ form.name }}</h4>
+          <h4 class="my-3 text-primary px-2 py-4 rounded">{{ form.name }}</h4>
         </v-card-title>
         <v-card-text>
           <v-form v-model="valid">
@@ -25,6 +25,7 @@
                 v-if="field.type === 'check_box'"
                 v-model="formData[field.column_name]"
                 :items="field.options"
+                chips
                 :label="field.column_name"
                 :rules="[field.required ? rules.required : () => true]"
                 clearable

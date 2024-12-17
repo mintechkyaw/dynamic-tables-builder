@@ -41,6 +41,7 @@
             :rules="[field.required ? rules.required : () => true]"
             item-text="label"
             :label="field.column_name"
+            chips
             clearable
             outlined
             color="primary"
