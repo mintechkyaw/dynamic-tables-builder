@@ -19,11 +19,13 @@ class DynamicTableExport implements FromCollection, WithHeadings, WithStyles
         $this->data = $data;
         $this->headers = $headers;
     }
+
     public function styles(Worksheet $sheet)
     {
         $highestColumn = $sheet->getHighestColumn();
         $highestRow = $sheet->getHighestRow();
         $dataRange = "A1:{$highestColumn}{$highestRow}";
+
         return [
             1 => [
                 'font' => ['bold' => true],

@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('name', 255)->unique();
             $table->timestamps();
         });
+
+        Schema::create('permission_user', function (Blueprint $table) {
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
+        });
     }
 
     /**
@@ -24,5 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('permissions');
+        Schema::dropIfExists('permission_user');
+
     }
 };

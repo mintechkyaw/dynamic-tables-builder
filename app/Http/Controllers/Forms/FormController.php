@@ -32,7 +32,7 @@ class FormController extends Controller
         } elseif ($request->status === 'published') {
             $forms = Form::where('status', 'published')->get();
         } else {
-            $forms = Form::all();
+            $forms = Form::get();
         }
 
         return FormResource::collection($forms);

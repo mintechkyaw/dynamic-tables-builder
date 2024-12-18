@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.css';
 import { createApp } from "vue";
-import "./bootstrap";
+// import "./bootstrap";
 import App from "./App.vue";
 import router from "./router";
 import "vuetify/styles";
@@ -10,7 +10,6 @@ import * as directives from "vuetify/directives";
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import store from './store';
 import { abilitiesPlugin } from '@casl/vue';
-import '@mdi/font/css/materialdesignicons.css'
 import ability from './services/ability';
 
 const vuetify = createVuetify({

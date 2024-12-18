@@ -12,7 +12,17 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $predefinedPermissions = ['manage-all', 'create-form', 'read-form', 'update-form', 'delete-form', 'create-user', 'read-user', 'update-user', 'delete-user'];
+        $predefinedPermissions = [
+            'manage-all',
+            'create-form',
+            'read-form',
+            'update-form',
+            'delete-form',
+            'create-user',
+            'read-user',
+            'update-user',
+            'delete-user'];
+
         foreach ($predefinedPermissions as $p) {
             Permission::create(['name' => $p]);
         }
