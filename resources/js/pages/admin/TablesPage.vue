@@ -24,7 +24,7 @@
                         <td class="text-success">{{ item.status }}</td>
                         <td>
                             <v-btn v-if="$can('read',item.slug)" @click="responseTableLists(item.id)"
-                                ><i class="fa-solid fa-eye"></i
+                                ><i class="fa-solid fa-eye "></i
                             ></v-btn>
                             <v-btn
                                     v-if="$can('create',item.slug)"

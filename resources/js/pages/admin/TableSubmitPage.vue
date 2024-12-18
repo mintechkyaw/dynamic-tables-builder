@@ -6,6 +6,7 @@
       >
     </router-link>
     <v-alert
+    class="my-2"
       v-if="successAlert"
       closable
       :text="successMessage"
@@ -40,6 +41,7 @@
             :rules="[field.required ? rules.required : () => true]"
             item-text="label"
             :label="field.column_name"
+            chips
             clearable
             outlined
             color="primary"

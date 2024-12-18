@@ -31,6 +31,7 @@
                     <div class="stat-value">{{ stats.tablesCount }}</div>
                 </v-card>
             </v-col>
+            
         </v-row>
     </v-container>
 </template>
